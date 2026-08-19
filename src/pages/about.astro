@@ -1,77 +1,135 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const pageTitle = "About Me";
+const pageTitle = "关于我 | About";
 
+// ✏️ 改这里：个人信息
 const identity = {
-  firstName: "Sarah",
-  country: "Canada",
-  occupation: "Technical Writer",
-  hobbies: ["photography", "birdwatching", "baseball"],
+  firstName: "Mayu",
+  country: "中国",
+  occupation: "人类",
+  hobbies: ["玩", "听音乐", "探索新技术"],
 };
 
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Writing Docs"];
+// ✏️ 改这里：技能列表
+const skills = ["HTML", "CSS", "JavaScript", "Astro", "Cloudflare", "Git", "前面提到的全部不会~"];
 
-const happy = true;
-const finished = true;
-const goal = 3;
-
-const skillColor = "crimson";
-const fontWeight = "bold";
-const textCase = "uppercase";
+// ✏️ 改这里：社交链接 (⚠️请把中文占位符换成你真实的账号)
+const socialLinks = [
+  { name: "GitHub", url: "https://github.com/shikibe0721", text: "shikibe0721" },
+  { name: "Telegram (电报)", url: "https://t.me/你的电报用户名", text: "@Shikibe0721" },
+  { name: "X (Twitter)", url: "https://x.com/你的X用户名", text: "@Shikibe_MayuX" },
+  { name: "QQ", url: "#", text: "先加tg,我看到就回" },
+  { name: "微信 (WeChat)", url: "#", text: "先加tg,我看到就回" },
+];
 ---
 
-<style define:vars={{ skillColor, fontWeight, textCase }}>
+<style>
+  /* 浅色模式下的卡片样式 */
+  .about-card {
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    color: #333333; /* ✅ 修复：强制卡片内文字为深灰色，防止白底白字 */
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  /* ✅ 修复：让卡片在系统深色模式下，自动变成深色背景+浅色文字 */
+  @media (prefers-color-scheme: dark) {
+    .about-card {
+      background: #1e1e2e; /* 深色卡片背景 */
+      color: #e2e8f0;      /* 浅色文字 */
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    }
+    .handle {
+      background: #2d2d3f; /* 深色模式下的账号标签背景 */
+      color: #a5b4fc;
+    }
+  }
+
   h1 {
-    color: purple;
-    font-size: 4rem;
+    color: #6366f1;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    color: #6b7280; /* ✅ 修复：写死副标题颜色，防止看不清 */
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
   }
   .skill {
-    color: var(--skillColor);
-    font-weight: var(--fontWeight);
-    text-transform: var(--textCase);
+    display: inline-block;
+    margin: 0.25rem;
+    padding: 0.3rem 0.8rem;
+    background: #eef2ff;
+    color: #6366f1;
+    border-radius: 999px;
+    font-size: 0.9rem;
+  }
+  a {
+    color: #6366f1;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .social-list {
+    list-style: none;
+    padding: 0;
+  }
+  .social-list li {
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+  }
+  .handle {
+    color: #333333;
+    background: #f3f4f6;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-family: monospace;
   }
 </style>
 
 <BaseLayout pageTitle={pageTitle}>
-  <h2>... and my new Astro site!</h2>
+  <div class="about-card">
+    <h1>你好，我是 {identity.firstName} 👋</h1>
+    <p class="subtitle">来自{identity.country} · {identity.occupation}</p>
 
-  <p>
-    I am working through Astro's introductory tutorial. This is the second page
-    on my website, and it's the first one I built myself!
-  </p>
+    <p>
+      欢迎来到我的博客！这里记录我的技术笔记和生活随笔。
+    </p>
 
-  <p>
-    This site will update as I complete more of the tutorial, so keep checking
-    back and see how my journey is going!
-  </p>
-  <p>Here are a few facts about me:</p>
-  <ul>
-    <li>My name is {identity.firstName}.</li>
-    <li>
-      I live in {identity.country} and I work as a {identity.occupation}.
-    </li>
-    {
-      identity.hobbies.length >= 2 && (
+    <h2>🎯 我的爱好</h2>
+    <ul>
+      {identity.hobbies.map((hobby) => <li>{hobby}</li>)}
+    </ul>
+
+    <h2>🛠️ 技能栈</h2>
+    <p>
+      {skills.map((skill) => <span class="skill">{skill}</span>)}
+    </p>
+
+    <h2>🔗 社交链接</h2>
+    <ul class="social-list">
+      {socialLinks.map((link) => (
         <li>
-          Two of my hobbies are: {identity.hobbies[0]} and {identity.hobbies[1]}
+          <strong>{link.name}:</strong> 
+          {
+            link.url !== "#" ? (
+              // 如果是真实网址，渲染为可点击链接
+              <a href={link.url} target="_blank" rel="noopener noreferrer">{link.text}</a>
+            ) : (
+              // 如果是QQ/微信，渲染为纯文本样式
+              <span class="handle">{link.text}</span>
+            )
+          }
         </li>
-      )
-    }
-  </ul>
-  <p>My skills are:</p>
-  <ul>
-    {skills.map((skill) => <li class="skill">{skill}</li>)}
-  </ul>
-  {happy && <p>I am happy to be learning Astro!</p>}
-
-  {finished && <p>I finished this tutorial!</p>}
-
-  {
-    goal === 3 ? (
-      <p>My goal is to finish in 3 days.</p>
-    ) : (
-      <p>My goal is not 3 days.</p>
-    )
-  }
+      ))}
+    </ul>
+  </div>
 </BaseLayout>
