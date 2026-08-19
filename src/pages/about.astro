@@ -25,28 +25,14 @@ const socialLinks = [
 ---
 
 <style>
-  /* 浅色模式下的卡片样式 */
   .about-card {
     max-width: 640px;
     margin: 2rem auto;
     padding: 2rem;
     background: #ffffff;
-    color: #333333; /* ✅ 修复：强制卡片内文字为深灰色，防止白底白字 */
+    color: #333333; /* 强制深色文字，白底黑字永远清晰 */
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  }
-
-  /* ✅ 修复：让卡片在系统深色模式下，自动变成深色背景+浅色文字 */
-  @media (prefers-color-scheme: dark) {
-    .about-card {
-      background: #1e1e2e; /* 深色卡片背景 */
-      color: #e2e8f0;      /* 浅色文字 */
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-    }
-    .handle {
-      background: #2d2d3f; /* 深色模式下的账号标签背景 */
-      color: #a5b4fc;
-    }
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); /* ✅ 阴影调轻，不会显得框色深 */
   }
 
   h1 {
@@ -55,12 +41,13 @@ const socialLinks = [
     margin-bottom: 0.5rem;
   }
   .subtitle {
-    color: #6b7280; /* ✅ 修复：写死副标题颜色，防止看不清 */
+    color: #6b7280;
     margin-bottom: 1.5rem;
   }
   h2 {
     margin-top: 1.5rem;
     font-size: 1.2rem;
+    color: #333333; /* ✅ 写死标题颜色 */
   }
   .skill {
     display: inline-block;
