@@ -1,109 +1,48 @@
 ---
-export const prerender = false;
 import BaseLayout from "../layouts/BaseLayout.astro";
-import BlogPost from "../components/BlogPost.astro";
-
-// ✅ 自动读取所有文章并按日期倒序排列（最新在前）
-const allPosts = Object.values(
-  import.meta.glob("./posts/*.md", { eager: true })
-).sort((a: any, b: any) => {
-  const dateA = new Date(a.frontmatter.pubDate || 0).getTime();
-  const dateB = new Date(b.frontmatter.pubDate || 0).getTime();
-  return dateB - dateA;
-});
-
-// ✏️ 改这里：页面标题和描述
-const pageTitle = "我的博客";
-const pageDescription = "记录我的点点滴滴。😂";
+const pageTitle = "我的技术博客";
 ---
 
-<style>
-  .blog-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-  .blog-header h1 {
-    color: #6366f1;
-    font-size: 2.2rem;
-    margin-bottom: 0.5rem;
-  }
-  .blog-header p {
-    color: #6b7280;
-    font-size: 1.05rem;
-  }
-  .post-list {
-    list-style: none;
-    padding: 0;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .post-item {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .post-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  }
-  .post-date {
-    color: #9ca3af;
-    font-size: 0.85rem;
-    margin-bottom: 0.4rem;
-  }
-  .post-title {
-    margin: 0;
-  }
-  .post-title a {
-    color: #1f2937;
-    text-decoration: none;
-    font-size: 1.3rem;
-    font-weight: 600;
-  }
-  .post-title a:hover {
-    color: #6366f1;
-  }
-  .post-desc {
-    color: #6b7280;
-    margin-top: 0.5rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-</style>
-
 <BaseLayout pageTitle={pageTitle}>
-  <div class="blog-header">
-    <h1>{pageTitle}</h1>
-    <p>{pageDescription}</p>
-  </div>
+  <p>记录我的点点滴滴。</p>
+  <p><a href="/admin">👉 进入管理后台</a></p>
 
-  <ul class="post-list">
-    {allPosts.map((post: any) => (
-      <li class="post-item">
-        {/* 显示发布日期 */}
-        {post.frontmatter.pubDate && (
-          <p class="post-date">
-            📅 {new Date(post.frontmatter.pubDate).toLocaleDateString("zh-CN", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-        )}
-
-        {/* 文章标题链接 */}
-        <h2 class="post-title">
-          <a href={post.url}>{post.frontmatter.title}</a>
-        </h2>
-
-        {/* 显示摘要 */}
-        {post.frontmatter.description && (
-          <p class="post-desc">{post.frontmatter.description}</p>
-        )}
-      </li>
-    ))}
-  </ul>
+  <div id="blog-list"><p style="color:#888;">加载中...</p></div>
 </BaseLayout>
+
+<script is:inline>
+  async function loadBlogPosts() {
+    try {
+      const res = await fetch('/api/posts');
+      const posts = await res.json();
+      const container = document.getElementById('blog-list');
+
+      if (posts.length === 0) {
+        container.innerHTML = '<p style="color:#888;">暂无文章，去 <a href="/admin">后台</a> 写一篇吧！</p>';
+        return;
+      }
+
+      container.innerHTML = '<ul style="list-style:none;padding:0;">' + posts.map(post => {
+        const tags = JSON.parse(post.tags || '[]');
+        const tagHtml = tags.map(tag =>
+          `<span style="display:inline-block;margin-right:0.5rem;padding:0.15rem 0.6rem;background:#eef2ff;color:#6366f1;border-radius:999px;font-size:0.85rem;">${tag}</span>`
+        ).join('');
+
+        return `
+          <li style="margin-bottom:1.5rem;padding:1rem;border:1px solid #eee;border-radius:8px;">
+            <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;">${post.title}</h2>
+            <p style="color:#888;font-size:0.9rem;margin:0 0 0.5rem 0;">
+              📅 ${post.pub_date} · ✍️ ${post.author}
+            </p>
+            ${post.description ? `<p style="color:#555;margin:0;">${post.description}</p>` : ''}
+            ${tags.length > 0 ? `<div style="margin-top:0.5rem;">${tagHtml}</div>` : ''}
+          </li>
+        `;
+      }).join('') + '</ul>';
+    } catch (e) {
+      document.getElementById('blog-list').innerHTML = '<p style="color:red;">加载失败，请刷新重试</p>';
+    }
+  }
+
+  loadBlogPosts();
+</script>
