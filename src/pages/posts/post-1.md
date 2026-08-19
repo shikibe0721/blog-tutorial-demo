@@ -4,6 +4,7 @@ title: ' blog1,先看this'
 pubDate: 2026-08-19
 description: "This is the first post of my blog."
 author: "一个傻逼"
+tags: []
 ---
 
 Welcome to my _new blog_但是我在用AI开发出一个能够实时在网页上发或者改blog之前我应该不会动它了,其它几篇blog都是内置内容,跟我没关系
