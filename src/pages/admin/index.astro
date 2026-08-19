@@ -51,7 +51,7 @@ const pageTitle = "博客管理后台";
   </div>
 </BaseLayout>
 
-<script>
+<script is:inline>
   async function login() {
     const pw = document.getElementById('password').value;
     const res = await fetch('/api/auth', {
