@@ -4,23 +4,39 @@ const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout pageTitle={frontmatter.title}>
-  <p>{frontmatter.pubDate.toString().slice(0, 10)}</p>
-  <p><em>{frontmatter.description}</em></p>
-  <p>Written by: {frontmatter.author}</p>
-  <img src={frontmatter.image.url} width="300" alt={frontmatter.image.alt} />
+  {/* 日期：有就显示，没有就隐藏 */}
+  {frontmatter.pubDate && <p>{new Date(frontmatter.pubDate).toString().slice(0, 10)}</p>}
+  
+  {/* 描述：有就显示 */}
+  {frontmatter.description && <p><em>{frontmatter.description}</em></p>}
+  
+  {/* 作者：有就显示 */}
+  {frontmatter.author && <p>Written by: {frontmatter.author}</p>}
+  
+  {/* ✅ 修复图片：只有定义了 image 对象才渲染 img 标签 */}
+  {frontmatter.image && (
+    <img 
+      src={frontmatter.image.url} 
+      width="300" 
+      alt={frontmatter.image.alt || '文章封面'} 
+    />
+  )}
 
-  <div class="tags">
-    {
-      frontmatter.tags.map((tag: string) => (
+  {/* ✅ 修复标签：只有定义了 tags 数组且不为空才渲染 */}
+  {frontmatter.tags && frontmatter.tags.length > 0 && (
+    <div class="tags">
+      {frontmatter.tags.map((tag: string) => (
         <p class="tag">
           <a href={`/tags/${tag}`}>{tag}</a>
         </p>
-      ))
-    }
-  </div>
+      ))}
+    </div>
+  )}
 
+  {/* 文章正文内容 */}
   <slot />
 </BaseLayout>
+
 <style>
   a {
     color: #004471;
