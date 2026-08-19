@@ -1,0 +1,165 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const pageTitle = "博客管理后台";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="admin-container">
+    <h1>📝 博客管理后台</h1>
+
+    <!-- 登录面板 -->
+    <div id="login-panel">
+      <input type="password" id="password" placeholder="输入管理密码" />
+      <button onclick="login()">登录</button>
+    </div>
+
+    <!-- 编辑面板（默认隐藏） -->
+    <div id="editor-panel" style="display:none;">
+      <div class="toolbar">
+        <button onclick="loadPosts()">🔄 刷新列表</button>
+        <button onclick="showNewForm()">➕ 新文章</button>
+      </div>
+
+      <div id="post-list"></div>
+
+      <div id="post-form" style="display:none; margin-top:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px;">
+        <h3 id="form-title">新建文章</h3>
+        <input type="hidden" id="edit-id" />
+
+        <label>标题</label><br/>
+        <input type="text" id="f-title" style="width:100%;margin-bottom:0.5rem;" /><br/>
+
+        <label>Slug（URL路径）</label><br/>
+        <input type="text" id="f-slug" style="width:100%;margin-bottom:0.5rem;" /><br/>
+
+        <label>描述</label><br/>
+        <textarea id="f-desc" style="width:100%;margin-bottom:0.5rem;"></textarea><br/>
+
+        <label>标签（逗号分隔）</label><br/>
+        <input type="text" id="f-tags" style="width:100%;margin-bottom:0.5rem;" /><br/>
+
+        <label>发布日期</label><br/>
+        <input type="date" id="f-date" style="width:100%;margin-bottom:0.5rem;" /><br/>
+
+        <label>正文（Markdown）</label><br/>
+        <textarea id="f-content" rows="15" style="width:100%;margin-bottom:0.5rem;font-family:monospace;"></textarea><br/>
+
+        <button onclick="savePost()">💾 保存</button>
+        <button onclick="hideForm()">取消</button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  async function login() {
+    const pw = document.getElementById('password').value;
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    if (res.ok) {
+      document.getElementById('login-panel').style.display = 'none';
+      document.getElementById('editor-panel').style.display = 'block';
+      loadPosts();
+    } else {
+      alert('密码错误');
+    }
+  }
+
+  async function loadPosts() {
+    const res = await fetch('/api/posts');
+    const posts = await res.json();
+    const list = document.getElementById('post-list');
+    if (posts.length === 0) {
+      list.innerHTML = '<p style="color:#888;">暂无文章，点击"新文章"开始写作吧！</p>';
+      return;
+    }
+    list.innerHTML = posts.map(p => `
+      <div style="padding:0.5rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+        <span><strong>${p.title}</strong> <small style="color:#888;">(${p.pub_date})</small></span>
+        <span>
+          <button onclick='editPost(${JSON.stringify(p).replace(/'/g, "&#39;")})'>编辑</button>
+          <button onclick="deletePost(${p.id})" style="color:red;">删除</button>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  function showNewForm() {
+    document.getElementById('form-title').textContent = '新建文章';
+    document.getElementById('edit-id').value = '';
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-slug').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-tags').value = '';
+    document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('f-content').value = '';
+    document.getElementById('post-form').style.display = 'block';
+  }
+
+  function editPost(post) {
+    document.getElementById('form-title').textContent = '编辑文章';
+    document.getElementById('edit-id').value = post.id;
+    document.getElementById('f-title').value = post.title;
+    document.getElementById('f-slug').value = post.slug;
+    document.getElementById('f-desc').value = post.description || '';
+    document.getElementById('f-tags').value = JSON.parse(post.tags || '[]').join(', ');
+    document.getElementById('f-date').value = post.pub_date ? post.pub_date.slice(0, 10) : '';
+    document.getElementById('f-content').value = post.content || '';
+    document.getElementById('post-form').style.display = 'block';
+  }
+
+  function hideForm() {
+    document.getElementById('post-form').style.display = 'none';
+  }
+
+  async function savePost() {
+    const id = document.getElementById('edit-id').value;
+    const data = {
+      title: document.getElementById('f-title').value,
+      slug: document.getElementById('f-slug').value,
+      description: document.getElementById('f-desc').value,
+      tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+      pub_date: document.getElementById('f-date').value,
+      content: document.getElementById('f-content').value,
+    };
+
+    if (!data.title || !data.slug) {
+      alert('标题和Slug不能为空');
+      return;
+    }
+
+    const url = id ? `/api/posts/${id}` : '/api/posts';
+    const method = id ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      alert('保存成功！');
+      hideForm();
+      loadPosts();
+    } else {
+      alert('保存失败，请检查控制台');
+    }
+  }
+
+  async function deletePost(id) {
+    if (!confirm('确定要删除这篇文章吗？')) return;
+    await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+    loadPosts();
+  }
+</script>
+
+<style>
+  .admin-container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
+  .toolbar { margin-bottom: 1rem; }
+  input, textarea { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+  button { padding: 0.4rem 1rem; cursor: pointer; margin: 0.25rem; border-radius: 4px; border: 1px solid #ccc; background: #fff; }
+  button:hover { background: #f0f0f0; }
+</style>
