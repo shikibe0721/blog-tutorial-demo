@@ -12,25 +12,13 @@ const identity = {
 };
 
 // ✏️ 改这里：技能列表
-.skill {
-  display: inline-block;
-  margin: 0.25rem;
-  padding: 0.3rem 0.8rem;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #4a4a6a;
-  border-radius: 999px;
-  font-size: 0.9rem;
-}
 const skills = ["HTML", "CSS", "JavaScript", "前面提到的都不会喵~"];
 
 // ✏️ 改这里：社交链接 (⚠️请把中文占位符换成你真实的账号)
 const socialLinks = [
   { name: "GitHub", url: "https://github.com/shikibe0721", text: "shikibe0721" },
-  { name: "Telegram (电报)", url: "https://t.me/你的电报用户名", text: "@Shikibe0721" },
-  { name: "X (Twitter)", url: "https://x.com/你的X用户名", text: "@Shikibe_MayuX" },
+  { name: "Telegram (电报)", url: "https://t.me/Shikibe0721", text: "@Shikibe0721" },
+  { name: "X (Twitter)", url: "https://x.com/Shikibe_MayuX", text: "@Shikibe_MayuX" },
   { name: "QQ", url: "#", text: "先加tg,我看到就回" },
   { name: "微信 (WeChat)", url: "#", text: "先加tg,我看到就回" },
 ];
@@ -38,17 +26,17 @@ const socialLinks = [
 
 <style>
   .about-card {
-  max-width: 640px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  color: #333;
-}
+    max-width: 640px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    color: #333;
+  }
   h1 {
     color: #6366f1;
     font-size: 2.5rem;
@@ -61,14 +49,17 @@ const socialLinks = [
   h2 {
     margin-top: 1.5rem;
     font-size: 1.2rem;
-    color: #333333; /* ✅ 写死标题颜色 */
+    color: #333333;
   }
   .skill {
     display: inline-block;
     margin: 0.25rem;
     padding: 0.3rem 0.8rem;
-    background: #eef2ff;
-    color: #6366f1;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #4a4a6a;
     border-radius: 999px;
     font-size: 0.9rem;
   }
@@ -89,7 +80,10 @@ const socialLinks = [
   }
   .handle {
     color: #333333;
-    background: #f3f4f6;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 0.15rem 0.5rem;
     border-radius: 4px;
     font-family: monospace;
@@ -122,10 +116,8 @@ const socialLinks = [
           <strong>{link.name}:</strong> 
           {
             link.url !== "#" ? (
-              // 如果是真实网址，渲染为可点击链接
               <a href={link.url} target="_blank" rel="noopener noreferrer">{link.text}</a>
             ) : (
-              // 如果是QQ/微信，渲染为纯文本样式
               <span class="handle">{link.text}</span>
             )
           }
