@@ -12,6 +12,8 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <!-- liquidGL CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/liquid-gl@latest/dist/liquidGL.min.js"></script>
   </head>
   <body>
     <Header />
@@ -20,6 +22,20 @@ const { pageTitle } = Astro.props;
     <Footer />
     <script>
       import "../scripts/menu.js";
+    </script>
+    <!-- liquidGL 初始化 -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof liquidGL !== 'undefined') {
+          liquidGL({
+            target: '[data-liquid-glass]',
+            snapshot: 'body',
+            resolution: 0.5,
+            frost: 0.1,
+            aberration: 0.02,
+          });
+        }
+      });
     </script>
   </body>
 </html>
