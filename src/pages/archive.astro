@@ -1,0 +1,127 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const pageTitle = "归档";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <p style="color:#555;font-size:1.05rem;">📚 这个博客走过的路。</p>
+  <div id="timeline-wrap"><p style="color:#888;">加载中...</p></div>
+</BaseLayout>
+
+<style>
+  .tl {
+    position: relative;
+    margin: 2rem 0;
+    padding-left: 2rem;
+  }
+  .tl::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.4), rgba(168, 85, 247, 0.15));
+  }
+  .tl-year {
+    position: relative;
+    margin: 1.8rem 0 0.8rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #1d1d1f;
+  }
+  .tl-year:first-child { margin-top: 0.5rem; }
+  .tl-year::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  }
+  .tl-item {
+    position: relative;
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 0.45rem 0.9rem;
+    margin: 0.3rem 0;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: calc(-2rem + 3px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.45);
+  }
+  .tl-item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateX(4px);
+  }
+  .tl-date {
+    font-size: 0.8rem;
+    color: #888;
+    font-family: "SF Mono", monospace;
+    flex-shrink: 0;
+  }
+  .tl-title { color: #1d1d1f; font-weight: 500; }
+
+  html.dark .tl::before { background: linear-gradient(180deg, rgba(165, 166, 255, 0.5), rgba(168, 85, 247, 0.2)); }
+  html.dark .tl-year { color: #f2f2fa; }
+  html.dark .tl-item:hover { background: rgba(255, 255, 255, 0.08); }
+  html.dark .tl-title { color: #e8e8f0; }
+  html.dark .tl-date { color: #8888a0; }
+</style>
+
+<script is:inline>
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  async function loadTimeline() {
+    try {
+      const res = await fetch('/api/posts');
+      const posts = await res.json();
+      posts.sort((a, b) => (a.pub_date < b.pub_date ? 1 : -1));
+
+      const groups = {};
+      posts.forEach(p => {
+        const y = (p.pub_date || '').slice(0, 4) || '未知';
+        (groups[y] = groups[y] || []).push(p);
+      });
+
+      const years = Object.keys(groups).sort((a, b) => (a < b ? 1 : -1));
+      if (years.length === 0) {
+        document.getElementById('timeline-wrap').innerHTML = '<p style="color:#888;">还没有文章~</p>';
+        return;
+      }
+
+      let html = '<div class="tl">';
+      years.forEach(year => {
+        html += '<div class="tl-year">' + year + ' · ' + groups[year].length + ' 篇</div>';
+        groups[year].forEach(p => {
+          html += '<a class="tl-item" href="/posts/' + p.slug + '">' +
+            '<span class="tl-date">' + (p.pub_date || '').slice(5) + '</span>' +
+            '<span class="tl-title">' + esc(p.title) + '</span></a>';
+        });
+      });
+      html += '</div>';
+      document.getElementById('timeline-wrap').innerHTML = html;
+    } catch (e) {
+      document.getElementById('timeline-wrap').innerHTML = '<p style="color:red;">加载失败</p>';
+    }
+  }
+  loadTimeline();
+</script>
