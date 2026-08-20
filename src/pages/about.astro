@@ -5,19 +5,18 @@ const pageTitle = "关于我";
 
 <BaseLayout pageTitle={pageTitle}>
   <div class="about-grid">
-    <!-- ═══ 大框：自我介绍（改这里的文字） ═══ -->
+    <!-- 大框 -->
     <div class="about-big" data-liquid-glass data-aos="fade">
       <h2>👋 你好，我是 Mayu</h2>
-      <p>一个不会用CNAME的人类。</p>
-      <p>这个博客记录了我的点点滴滴：折腾AI以及一些奇奇怪怪的想法。</p>
-      <p>(我说我想成为人类有没有懂的)</p>
-      <p>如果你也是同类，欢迎联系我 ↓</p>
+      <p>一个DlonbJleja。</p>
+      <p>我说我想成为人类有没有懂的</p>
+      <p>这个博客记录了我的点点滴滴：折腾AI、以及一些奇奇怪怪的想法。</p>
+      <p>如果你也是死人，欢迎联系我 ↓</p>
     </div>
 
-    <!-- ═══ 右侧小框们 ═══ -->
+    <!-- 小框 -->
     <div class="about-col">
-      <!-- 小框 1：技能（改这里的标签） -->
-      <div class="about-small" data-aos="fade-up" data-tilt>
+      <div class="about-small" data-aos="fade-up">
         <h3>⚡ 技能</h3>
         <div class="chips">
           <span class="skill">Astro</span>
@@ -28,37 +27,40 @@ const pageTitle = "关于我";
           <span class="skill">摸鱼</span>
           <span class="skill">Cloudflare</span>
           <span class="skill">摸鱼</span>
-          <span class="skill">前面提到的全都不会,除了摸鱼</span>
+          <span class="skill">前面写的除了摸鱼我全都不会弹~</span>
         </div>
       </div>
 
-            <!-- 小框 2：社交（改链接/ID） -->
-      <div class="about-small" data-aos="fade-up" data-tilt>
+      <div class="about-small" data-aos="fade-up">
         <h3>🔗 社交</h3>
         <div class="socials">
           <a href="https://t.me/Shikibe0721" target="_blank" rel="noopener">✈️ Telegram</a>
-          <a href="https://github.com/Shikibe0721" target="_blank" rel="noopener">🐙 GitHub</a>
-          <a href="https://x.com/Shikibe_MayuX" target="_blank" rel="noopener">𝕏 X</a>
-          <a href="https://wa.me/8618121434090" target="_blank" rel="noopener">🟢 WhatsApp</a>
-          <span class="social-text">🐧 QQ：加tg或者wa,看到回</span>
-          <span class="social-text">💬 微信：加tg或者wa,看到回</span>
+          <a href="https://github.com/shikibe0721" target="_blank" rel="noopener">🐙 GitHub</a>
+          <a href="https://x.com/Shikibe_MayuX" target="_blank" rel="noopener">🐦 X</a>
+          <a href="https://wa.me/8618121434090" target="_blank" rel="noopener">📱 WhatsApp</a>
+          <div class="social-text" title="点击复制">💬 微信: <span class="copy-id" data-copy="your_wx_id">其实你是要加我tg之后才能加微信或者QQ的</span></div>
+          <div class="social-text" title="点击复制">🐧 QQ: <span class="copy-id" data-copy="your_qq_number">其实你是要加我tg之后才能加微信或者QQ的</span></div>
         </div>
       </div>
 
-      <!-- 小框 3：爱好（改这里的标签） -->
-      <div class="about-small" data-aos="fade-up" data-tilt>
+      <div class="about-small" data-aos="fade-up">
         <h3>🎮 爱好</h3>
         <div class="chips">
-          <span class="skill">睡觉</span>
-          <span class="skill">折磨AI</span>
-          <span class="skill">PLAY</span>
+          <span class="skill">撸猫</span>
+          <span class="skill">吃 AI</span>
+          <span class="skill">喝</span>
           <span class="skill">网上冲浪</span>
         </div>
       </div>
     </div>
   </div>
-<!-- ========== 留言区（B站风） ========== -->
-<div class
+
+  <!-- ========== 留言区（B站风） ========== -->
+  <div class="gb-wrap">
+    <h3 class="gb-title">💬 留言 <span class="gb-count" id="gb-count"></span></h3>
+    <div id="gb-input-area"></div>
+    <div id="gb-list"></div>
+  </div>
 </BaseLayout>
 
 <style>
@@ -69,36 +71,26 @@ const pageTitle = "关于我";
     align-items: start;
     margin: 1.5rem 0;
   }
-
-  /* === 大框 === */
   .about-big {
     padding: 2rem;
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.15);
   }
-
   .about-big h2 { margin: 0 0 1rem; font-size: 1.6rem; color: #1d1d1f; }
   .about-big p { color: #444; line-height: 1.8; margin: 0.6rem 0; }
-
-  /* === 小框列 === */
   .about-col { display: flex; flex-direction: column; gap: 1rem; }
-
   .about-small {
     padding: 1.2rem 1.4rem;
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.15);
   }
-
   .about-small h3 { margin: 0 0 0.7rem; font-size: 1rem; color: #1d1d1f; }
-
   .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
   .skill {
     padding: 0.2rem 0.7rem;
@@ -108,7 +100,6 @@ const pageTitle = "关于我";
     font-size: 0.8rem;
     color: #555;
   }
-
   .socials { display: flex; flex-direction: column; gap: 0.4rem; }
   .socials a {
     display: block;
@@ -123,7 +114,22 @@ const pageTitle = "关于我";
   }
   .socials a:hover { background: rgba(99, 102, 241, 0.16); transform: translateX(4px); }
 
-  /* === 深色模式 === */
+  /* 社交：微信/QQ 纯文本复制块 */
+  .social-text {
+    display: block;
+    padding: 0.45rem 0.8rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #333;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    user-select: none;
+  }
+  .social-text:hover { background: rgba(255, 255, 255, 0.5); transform: translateX(4px); }
+  .social-text .copy-id { font-weight: 600; color: #6366f1; }
+
   html.dark .about-big, html.dark .about-small {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.14);
@@ -133,9 +139,157 @@ const pageTitle = "关于我";
   html.dark .about-big p { color: #c2c2d4; }
   html.dark .skill { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: #c9c9ff; }
   html.dark .socials a { background: rgba(165, 166, 255, 0.1); border-color: rgba(165, 166, 255, 0.2); color: #a5a6ff; }
+  html.dark .social-text { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); color: #c2c2d4; }
+  html.dark .social-text .copy-id { color: #a5a6ff; }
 
-  /* === 手机端：上下排列 === */
+  /* B站风留言区 */
+  :global(.gb-wrap) { margin: 2.5rem 0 1rem; }
+  :global(.gb-title) { font-size: 1.2rem; color: #1d1d1f; margin: 0 0 1rem; font-weight: 600; }
+  :global(html.dark .gb-title) { color: #f2f2fa; }
+  :global(.gb-count) { font-size: 0.85rem; color: #888; font-weight: 400; }
+
+  :global(.gb-editor) {
+    display: flex; gap: 0.8rem; padding: 1rem;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  :global(html.dark .gb-editor) { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); }
+  :global(.gb-avatar) {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 600; flex-shrink: 0;
+  }
+  :global(.gb-editor-body) { flex: 1; }
+  :global(.gb-editor textarea) {
+    width: 100%; border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.6rem 0.8rem; font-size: 0.92rem; color: #1d1d1f;
+    outline: none; resize: vertical; box-sizing: border-box; font-family: inherit;
+  }
+  :global(html.dark .gb-editor textarea) { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); color: #e8e8f0; }
+  :global(.gb-editor textarea::placeholder) { color: #999; }
+  :global(html.dark .gb-editor textarea::placeholder) { color: #8888a0; }
+  :global(.gb-editor-foot) { display: flex; align-items: center; margin-top: 0.5rem; }
+  :global(.gb-char) { font-size: 0.75rem; color: #999; margin-right: auto; }
+  :global(.gb-send) {
+    padding: 0.45rem 1.4rem;
+    background: rgba(99, 102, 241, 0.9); color: #fff; border: none;
+    font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+  }
+  :global(.gb-send:hover) { background: #6366f1; transform: scale(1.03); }
+
+  :global(.gb-login-hint) {
+    padding: 1.2rem; text-align: center;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px dashed rgba(128, 128, 128, 0.3);
+    color: #888; font-size: 0.9rem;
+  }
+  :global(html.dark .gb-login-hint) { background: rgba(255, 255, 255, 0.05); color: #8888a0; }
+
+  :global(.gb-item) { display: flex; gap: 0.8rem; padding: 1rem 0; border-bottom: 1px solid rgba(128, 128, 128, 0.15); }
+  :global(.gb-item-body) { flex: 1; }
+  :global(.gb-user) { color: #6366f1; font-weight: 600; font-size: 0.9rem; }
+  :global(html.dark .gb-user) { color: #a5a6ff; }
+  :global(.gb-time) { color: #999; font-size: 0.75rem; margin-left: 0.5rem; }
+  :global(.gb-text) { margin: 0.3rem 0 0; font-size: 0.92rem; line-height: 1.6; color: #444; white-space: pre-wrap; }
+  :global(html.dark .gb-text) { color: #c2c2d4; }
+
   @media screen and (max-width: 700px) {
     .about-grid { grid-template-columns: 1fr; }
   }
 </style>
+
+<script is:inline>
+  // === 社交账号点击复制 ===
+  document.addEventListener('click', function(e) {
+    var textEl = e.target.closest('.social-text');
+    if (textEl) {
+      var copyEl = textEl.querySelector('.copy-id');
+      if (copyEl) {
+        navigator.clipboard.writeText(copyEl.dataset.copy).then(function() {
+          var original = copyEl.textContent;
+          copyEl.textContent = '已复制!';
+          setTimeout(function() { copyEl.textContent = original; }, 1500);
+        }).catch(function() {});
+      }
+    }
+  });
+
+  // === 留言区逻辑 ===
+  function getToken() { return localStorage.getItem('mayu_token'); }
+  function authHeaders() {
+    var h = { 'Content-Type': 'application/json' };
+    var t = getToken();
+    if (t) h['Authorization'] = 'Bearer ' + t;
+    return h;
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function fmtTime(s) {
+    try {
+      var d = new Date(s + 'Z');
+      return (d.getMonth() + 1) + '-' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    } catch (e) { return s; }
+  }
+
+  var SLUG = 'about';
+
+  async function loadComments() {
+    var res = await fetch('/api/comments?slug=' + SLUG);
+    var list = await res.json();
+    var el = document.getElementById('gb-list');
+    document.getElementById('gb-count').textContent = '(' + list.length + ')';
+    if (!Array.isArray(list) || list.length === 0) {
+      el.innerHTML = '<p style="color:#888;text-align:center;padding:1rem 0;">还没有留言，来抢沙发！</p>';
+      return;
+    }
+    el.innerHTML = list.map(function (c) {
+      return '<div class="gb-item">' +
+        '<div class="gb-avatar">' + esc(String(c.username).charAt(0).toUpperCase()) + '</div>' +
+        '<div class="gb-item-body">' +
+        '<div><span class="gb-user">' + esc(c.username) + '</span><span class="gb-time">' + fmtTime(c.created_at) + '</span></div>' +
+        '<p class="gb-text">' + esc(c.content) + '</p>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  function renderForm() {
+    var area = document.getElementById('gb-input-area');
+    var user = localStorage.getItem('mayu_user');
+    if (!user || !getToken()) {
+      area.innerHTML = '<p class="gb-login-hint"><a href="/user">登录</a>后参与留言~</p>';
+      return;
+    }
+    area.innerHTML = '<div class="gb-editor">' +
+      '<div class="gb-avatar">' + esc(user.charAt(0).toUpperCase()) + '</div>' +
+      '<div class="gb-editor-body">' +
+      '<textarea id="gb-input" rows="3" maxlength="500" placeholder="说点什么...（最多 500 字）"></textarea>' +
+      '<div class="gb-editor-foot">' +
+      '<span class="gb-char"><span id="gb-len">0</span>/500</span>' +
+      '<button type="button" class="gb-send" id="gb-send">发送</button>' +
+      '</div></div></div>';
+    var input = document.getElementById('gb-input');
+    var len = document.getElementById('gb-len');
+    input.addEventListener('input', function () { len.textContent = input.value.length; });
+    document.getElementById('gb-send').addEventListener('click', async function () {
+      var text = input.value.trim();
+      if (!text) { alert('留言不能为空'); return; }
+      var r = await fetch('/api/comments', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ slug: SLUG, content: text }) });
+      var data = await r.json().catch(function () { return {}; });
+      if (r.ok) {
+        input.value = '';
+        len.textContent = '0';
+        loadComments();
+      } else {
+        alert(data.error || '发送失败');
+      }
+    });
+  }
+
+  loadComments();
+  renderForm();
+</script>
