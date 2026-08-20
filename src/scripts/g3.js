@@ -1,11 +1,11 @@
 // G4 连续圆角引擎（全浏览器兼容）
 (function () {
-  var SEL = '.ios-header, .nav-indicator, .home-card, .about-card, .about-small, .admin-container, #post-form, .calendar, .user-card, .comments-card, .post-item, .ios-btn, .ios-btn-secondary, .ios-btn-danger, .theme-btn, .tab, .date-btn, .like-btn, .react-btn, .comment-submit, .tag-chip, .sort-btn, .admin-link, .back-btn, .user-chip, .user-login, .tl-item, input, textarea, .gb-editor, .gb-send, .gb-login-hint';
-  var N = 4;      // G4：曲率二阶导连续
-  var STEPS = 14; // 每角采样数
+  // 注意：这里已经彻底删除了 .ios-header 和 .nav-indicator，保护导航栏！
+  var SEL = '.home-card, .about-card, .about-small, .admin-container, #post-form, .calendar, .user-card, .comments-card, .post-item, .ios-btn, .ios-btn-secondary, .ios-btn-danger, .theme-btn, .tab, .date-btn, .like-btn, .react-btn, .comment-submit, .tag-chip, .sort-btn, .admin-link, .back-btn, .user-chip, .user-login, .tl-item, input, textarea, .gb-editor, .gb-send, .gb-login-hint';
+  var N = 5;      // 曲率调高：N=5，squircle 感更强，过渡更明显
+  var STEPS = 16;
 
   function buildClip(el) {
-    // 手机端导航要弹下拉菜单，不能裁切
     if (el.classList.contains('ios-header') && window.innerWidth <= 636) {
       el.style.clipPath = '';
       return;
