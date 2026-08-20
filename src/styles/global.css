@@ -160,3 +160,30 @@ html.dark .ios-header.scrolled {
 html.dark #greeting {
   color: #d6d6e6 !important;
 }
+/* ========== 后台列表按钮修复：变回胶囊玻璃按钮 ========== */
+.post-item-actions button {
+  border-radius: 999px !important;
+  padding: 0.35rem 1rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.post-item-actions .ios-btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #555;
+}
+
+.post-item-actions .ios-btn-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.post-item-actions button:hover {
+  transform: scale(1.05);
+}
