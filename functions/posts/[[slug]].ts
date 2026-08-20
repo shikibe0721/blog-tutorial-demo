@@ -8,6 +8,8 @@ export async function onRequestGet() {
 <script>
   if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -32,16 +34,16 @@ export async function onRequestGet() {
     z-index: 1000; width: calc(100% - 24px); max-width: 780px;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0.6rem 1.2rem; border-radius: 999px;
-    background: rgba(255,255,255,0.25);
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(4px) saturate(180%);
+    -webkit-backdrop-filter: blur(4px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.35);
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 0 14px rgba(255,255,255,0.22);
   }
   html.dark .ios-header {
-    background: rgba(25,25,45,0.55);
+    background: rgba(25,25,45,0.5);
     border-color: rgba(255,255,255,0.12);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 14px rgba(255,255,255,0.06);
   }
   .right-side { display: flex; align-items: center; gap: 0.25rem; }
   .logo { font-weight: 700; font-size: 1.1rem; color: #1d1d1f; letter-spacing: -0.02em; }
@@ -70,12 +72,12 @@ export async function onRequestGet() {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255,255,255,0.5);
     border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 0 16px rgba(255,255,255,0.15);
   }
   html.dark .card {
     background: rgba(255,255,255,0.08);
     border-color: rgba(255,255,255,0.14);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 16px rgba(255,255,255,0.05);
   }
   .title { margin: 0 0 0.5rem; font-size: 1.8rem; font-weight: 700; color: #1d1d1f; }
   html.dark .title { color: #f2f2fa; }
@@ -90,6 +92,84 @@ export async function onRequestGet() {
   .post-content p { margin: 0.8rem 0; }
   .post-content li { margin-left: 1.5rem; margin-bottom: 0.3rem; }
   .loading { color: #888; }
+
+  pre.code-block {
+    background: #282c34;
+    border-radius: 12px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  pre.code-block code {
+    font-family: "SF Mono", "Fira Code", Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    background: none;
+  }
+
+  /* === 点赞 === */
+  .like-row { text-align: center; margin: 1.5rem 0; }
+  .like-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1.2rem; border-radius: 999px;
+    background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    font-size: 0.95rem; color: #1d1d1f; cursor: pointer; transition: all 0.2s;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .like-btn:hover { transform: scale(1.05); }
+  .like-btn.liked { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); color: #6366f1; }
+  html.dark .like-btn { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #e8e8f0; }
+  html.dark .like-btn.liked { background: rgba(165,166,255,0.15); border-color: rgba(165,166,255,0.3); color: #a5a6ff; }
+
+  /* === 评论区 === */
+  .comments-card {
+    margin-top: 0.5rem; padding: 1.5rem;
+    background: rgba(255,255,255,0.45);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.5); border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  html.dark .comments-card {
+    background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .comments-title { margin: 0 0 1rem; font-size: 1.1rem; color: #1d1d1f; }
+  html.dark .comments-title { color: #f2f2fa; }
+  .comment-item { display: flex; gap: 0.7rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(128,128,128,0.15); }
+  .comment-item:last-child { border-bottom: none; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 600; flex-shrink: 0;
+  }
+  .comment-body { flex: 1; }
+  .comment-head { display: flex; align-items: baseline; gap: 0.5rem; }
+  .comment-name { font-weight: 600; font-size: 0.9rem; color: #1d1d1f; }
+  html.dark .comment-name { color: #e8e8f0; }
+  .comment-time { font-size: 0.75rem; color: #999; }
+  .comment-text { margin: 0.3rem 0 0; font-size: 0.92rem; line-height: 1.6; color: #444; white-space: pre-wrap; }
+  html.dark .comment-text { color: #c2c2d4; }
+  .comment-form { margin-top: 1rem; }
+  .comment-form textarea {
+    width: 100%; padding: 0.6rem 0.9rem; border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.5);
+    font-size: 0.92rem; color: #1d1d1f; outline: none; box-sizing: border-box;
+    resize: vertical; font-family: inherit;
+  }
+  .comment-form textarea:focus { border-color: rgba(99,102,241,0.5); }
+  html.dark .comment-form textarea { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #e8e8f0; }
+  .comment-submit-row { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+  .comment-submit {
+    padding: 0.45rem 1.2rem; border-radius: 999px;
+    background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2);
+    color: #6366f1; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .comment-submit:hover { background: rgba(99,102,241,0.2); }
+  html.dark .comment-submit { background: rgba(165,166,255,0.12); border-color: rgba(165,166,255,0.25); color: #a5a6ff; }
+  .login-hint { margin-top: 1rem; font-size: 0.9rem; color: #888; }
 
   @media screen and (max-width: 636px) {
     .nav-links { display: none; }
@@ -111,10 +191,21 @@ export async function onRequestGet() {
 </header>
 <div class="container">
   <div id="post-detail"><p class="loading">加载中...</p></div>
+
+  <div id="engage" style="display:none;">
+    <div class="like-row">
+      <button type="button" id="like-btn" class="like-btn">👍 <span id="like-count">0</span></button>
+    </div>
+    <div class="comments-card">
+      <h3 class="comments-title">💬 评论</h3>
+      <div id="comment-list"></div>
+      <div id="comment-form-area"></div>
+    </div>
+  </div>
+
   <a href="/blog" class="back-btn">← 返回博客列表</a>
 </div>
 <script>
-  // === 主题切换 ===
   var themeBtn = document.getElementById('theme-toggle');
   function updateThemeIcon() {
     themeBtn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
@@ -126,7 +217,6 @@ export async function onRequestGet() {
   });
   updateThemeIcon();
 
-  // === 用户区域 ===
   function esc(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -148,6 +238,76 @@ export async function onRequestGet() {
   }
   renderUserArea();
 
+  // === 点赞 + 评论 ===
+  function getToken() { return localStorage.getItem('mayu_token'); }
+  function authHeaders() {
+    var h = { 'Content-Type': 'application/json' };
+    var t = getToken();
+    if (t) h['Authorization'] = 'Bearer ' + t;
+    return h;
+  }
+  function fmtTime(s) {
+    try {
+      var d = new Date(s + 'Z');
+      return (d.getMonth() + 1) + '-' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    } catch (e) { return s; }
+  }
+
+  async function loadLike(slug) {
+    var res = await fetch('/api/like?slug=' + encodeURIComponent(slug), { headers: authHeaders() });
+    if (!res.ok) return;
+    var data = await res.json();
+    var btn = document.getElementById('like-btn');
+    document.getElementById('like-count').textContent = data.count;
+    btn.classList.toggle('liked', data.liked);
+    btn.onclick = async function () {
+      if (!getToken()) { window.location.href = '/user'; return; }
+      var r = await fetch('/api/like', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ slug: slug }) });
+      if (r.ok) loadLike(slug);
+    };
+  }
+
+  async function loadComments(slug) {
+    var res = await fetch('/api/comments?slug=' + encodeURIComponent(slug));
+    var list = await res.json();
+    var el = document.getElementById('comment-list');
+    if (!Array.isArray(list) || list.length === 0) {
+      el.innerHTML = '<p class="login-hint" style="margin:0;">还没有评论，来抢沙发！</p>';
+      return;
+    }
+    el.innerHTML = list.map(function (c) {
+      return '<div class="comment-item">' +
+        '<div class="avatar">' + esc(String(c.username).charAt(0).toUpperCase()) + '</div>' +
+        '<div class="comment-body">' +
+        '<div class="comment-head"><span class="comment-name">' + esc(c.username) + '</span><span class="comment-time">' + fmtTime(c.created_at) + '</span></div>' +
+        '<p class="comment-text">' + esc(c.content) + '</p>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  function renderCommentForm(slug) {
+    var area = document.getElementById('comment-form-area');
+    var user = localStorage.getItem('mayu_user');
+    if (!user || !getToken()) {
+      area.innerHTML = '<p class="login-hint"><a href="/user">登录</a>后参与讨论~</p>';
+      return;
+    }
+    area.innerHTML = '<div class="comment-form"><textarea id="comment-input" rows="3" maxlength="500" placeholder="说点什么...（最多 500 字）"></textarea><div class="comment-submit-row"><button type="button" class="comment-submit" id="comment-submit">评论</button></div></div>';
+    document.getElementById('comment-submit').addEventListener('click', async function () {
+      var input = document.getElementById('comment-input');
+      var text = input.value.trim();
+      if (!text) { alert('评论不能为空'); return; }
+      var r = await fetch('/api/comments', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ slug: slug, content: text }) });
+      var data = await r.json().catch(function () { return {}; });
+      if (r.ok) {
+        input.value = '';
+        loadComments(slug);
+      } else {
+        alert(data.error || '评论失败');
+      }
+    });
+  }
+
   // === 加载文章 ===
   async function loadPost() {
     var pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -161,7 +321,13 @@ export async function onRequestGet() {
       document.title = post.title + " | Mayu's Blog";
       var tags = JSON.parse(post.tags || '[]');
       var tagHtml = tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+
       var content = post.content || '';
+      var codeBlocks = [];
+      content = content.replace(/\`\`\`(\w*)\\n([\s\S]*?)\`\`\`/g, function (m, lang, code) {
+        codeBlocks.push('<pre class="code-block"><code class="language-' + (lang || 'text') + '">' + esc(code) + '</code></pre>');
+        return '@@CODE' + (codeBlocks.length - 1) + '@@';
+      });
       content = content
         .replace(/^### (.+)$/gm, '<h3>$1</h3>')
         .replace(/^## (.+)$/gm, '<h2>$1</h2>')
@@ -171,6 +337,9 @@ export async function onRequestGet() {
         .replace(/\\n\\n/g, '</p><p>')
         .replace(/\\n/g, '<br/>');
       content = '<p>' + content + '</p>';
+      content = content.replace(/@@CODE(\d+)@@/g, function (m, i) { return codeBlocks[+i]; });
+      content = content.replace(/<p><pre/g, '<pre').replace(/<\/pre><\/p>/g, '</pre>').replace(/<p><br\/><\/p>/g, '');
+
       container.innerHTML = '<article class="card">' +
         '<h1 class="title">' + esc(post.title) + '</h1>' +
         '<p class="meta">📅 ' + esc(post.pub_date) + ' · ✍️ ' + esc(post.author) + '</p>' +
@@ -178,6 +347,13 @@ export async function onRequestGet() {
         '<hr style="border:none;border-top:1px solid rgba(128,128,128,0.2);margin:1.5rem 0;" />' +
         '<div class="post-content">' + content + '</div>' +
         '</article>';
+
+      if (window.hljs) hljs.highlightAll();
+
+      document.getElementById('engage').style.display = 'block';
+      loadLike(slug);
+      loadComments(slug);
+      renderCommentForm(slug);
     } catch (e) {
       document.getElementById('post-detail').innerHTML = '<p style="color:red;">加载失败</p>';
     }
