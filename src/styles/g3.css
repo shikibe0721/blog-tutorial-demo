@@ -2,7 +2,7 @@
   --r: 12px;
 }
 
-.home-card, .about-card, .about-small, .admin-container,
+.home-card, .about-card, .about-big, .about-small, .admin-container,
 #post-form, .calendar, .user-card, .comments-card, .post-item,
 .ios-btn, .ios-btn-secondary, .ios-btn-danger, .tab, .date-btn,
 .like-btn, .react-btn, .comment-submit, .tag-chip, .sort-btn, .admin-link,
@@ -13,7 +13,7 @@
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.08));
 }
 
-html.dark .home-card, html.dark .about-card,
+html.dark .home-card, html.dark .about-card, html.dark .about-big,
 html.dark .about-small, html.dark .admin-container, html.dark #post-form,
 html.dark .calendar, html.dark .user-card, html.dark .comments-card,
 html.dark .post-item, html.dark .ios-btn, html.dark .ios-btn-secondary,
