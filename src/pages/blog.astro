@@ -4,14 +4,21 @@ const pageTitle = "我的技术博客";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <p style="color:#555;font-size:1.05rem;">记录我学习 Astro 和前端开发的点点滴滴。</p>
+  <p style="color:#555;font-size:1.05rem;">记录我Ciallo的点点滴滴。</p>
   <p><a href="/admin" class="admin-link">👉 进入管理后台</a></p>
 
-  <div class="search-box">
+  <div class="blog-stats" id="blog-stats" data-aos="fade-up"></div>
+
+  <div class="search-box" data-aos="fade-up">
     <input type="text" id="search-input" placeholder="🔍 搜索标题、描述或标签..." />
   </div>
 
-  <div id="blog-list"><p style="color:#888;">加载中...</p></div>
+  <div class="filter-row" data-aos="fade-up">
+    <div class="tag-chips" id="tag-chips"></div>
+    <button type="button" id="sort-btn" class="sort-btn">↓ 最新在前</button>
+  </div>
+
+  <div id="blog-list" data-aos="fade-up"><p style="color:#888;">加载中...</p></div>
 </BaseLayout>
 
 <style>
@@ -26,10 +33,15 @@ const pageTitle = "我的技术博客";
     text-decoration: none;
   }
 
-  .search-box {
-    margin: 1.5rem 0 0.5rem;
+  .blog-stats {
+    margin: 1rem 0 0;
+    font-size: 0.85rem;
+    color: #888;
+    letter-spacing: 0.02em;
   }
+  html.dark .blog-stats { color: #8888a0; }
 
+  .search-box { margin: 1rem 0 0.5rem; }
   .search-box input {
     width: 100%;
     padding: 0.7rem 1.2rem;
@@ -44,15 +56,103 @@ const pageTitle = "我的技术博客";
     box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-
   .search-box input:focus {
     border-color: rgba(99, 102, 241, 0.5);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin: 0.8rem 0 0.5rem;
+  }
+  .tag-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
+  .tag-chip {
+    padding: 0.25rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #555;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  }
+  .tag-chip span { color: #999; font-size: 0.7rem; margin-left: 0.25rem; }
+  .tag-chip:hover { transform: scale(1.05); }
+  .tag-chip.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: #6366f1;
+  }
+  .tag-chip.active span { color: #6366f1; }
+  html.dark .tag-chip {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #b8b8cc;
+  }
+  html.dark .tag-chip.active {
+    background: rgba(165, 166, 255, 0.15);
+    border-color: rgba(165, 166, 255, 0.35);
+    color: #a5a6ff;
+  }
+
+  .sort-btn {
+    flex-shrink: 0;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #666;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  html.dark .sort-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #b8b8cc;
   }
 </style>
 
 <script is:inline>
   let allPosts = [];
+  const state = { kw: '', tag: null, desc: true };
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function tagCounts() {
+    const counts = {};
+    allPosts.forEach(p => JSON.parse(p.tags || '[]').forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+    return counts;
+  }
+
+  function renderStats() {
+    const counts = tagCounts();
+    const chars = allPosts.reduce((s, p) => s + (p.content || '').length, 0);
+    document.getElementById('blog-stats').textContent =
+      '📊 共 ' + allPosts.length + ' 篇文章 · ' + Object.keys(counts).length + ' 个标签 · 总计 ' + (chars / 1000).toFixed(1) + 'k 字';
+  }
+
+  function renderTagChips() {
+    const counts = tagCounts();
+    const tags = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+    const el = document.getElementById('tag-chips');
+    if (tags.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = tags.map(t =>
+      '<button type="button" class="tag-chip' + (state.tag === t ? ' active' : '') + '" data-tag="' + esc(t) + '">' + esc(t) + '<span>' + counts[t] + '</span></button>'
+    ).join('');
+    el.querySelectorAll('.tag-chip').forEach(b => {
+      b.addEventListener('click', () => {
+        state.tag = state.tag === b.dataset.tag ? null : b.dataset.tag;
+        renderTagChips();
+        applyFilters();
+      });
+    });
+  }
 
   function renderPosts(posts) {
     const container = document.getElementById('blog-list');
@@ -63,17 +163,17 @@ const pageTitle = "我的技术博客";
     container.innerHTML = '<ul style="list-style:none;padding:0;margin-top:1rem;">' + posts.map(post => {
       const tags = JSON.parse(post.tags || '[]');
       const tagHtml = tags.map(tag =>
-        `<span style="display:inline-block;margin-right:0.4rem;padding:0.15rem 0.6rem;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:999px;font-size:0.8rem;font-weight:500;">${tag}</span>`
+        `<span style="display:inline-block;margin-right:0.4rem;padding:0.15rem 0.6rem;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:999px;font-size:0.8rem;font-weight:500;">${esc(tag)}</span>`
       ).join('');
 
       return `
         <li style="margin-bottom:1.2rem;padding:1.5rem;background:rgba(255,255,255,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
           <a href="/posts/${post.slug}" style="text-decoration:none;color:inherit;display:block;">
-            <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#1d1d1f;font-weight:600;">${post.title}</h2>
+            <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#1d1d1f;font-weight:600;">${esc(post.title)}</h2>
             <p style="color:#888;font-size:0.85rem;margin:0 0 0.6rem 0;">
-              📅 ${post.pub_date} · ✍️ ${post.author}
+              📅 ${esc(post.pub_date)} · ✍️ ${esc(post.author)}
             </p>
-            ${post.description ? `<p style="color:#444;margin:0 0 0.6rem 0;line-height:1.6;">${post.description}</p>` : ''}
+            ${post.description ? `<p style="color:#444;margin:0 0 0.6rem 0;line-height:1.6;">${esc(post.description)}</p>` : ''}
             ${tags.length > 0 ? `<div style="margin-top:0.3rem;">${tagHtml}</div>` : ''}
           </a>
         </li>
@@ -81,28 +181,38 @@ const pageTitle = "我的技术博客";
     }).join('') + '</ul>';
   }
 
-  function filterPosts(keyword) {
-    const kw = keyword.trim().toLowerCase();
-    if (!kw) { renderPosts(allPosts); return; }
-    const filtered = allPosts.filter(p => {
-      const tags = JSON.parse(p.tags || '[]').join(' ');
-      return (p.title + ' ' + (p.description || '') + ' ' + tags).toLowerCase().includes(kw);
-    });
-    renderPosts(filtered);
+  function applyFilters() {
+    let list = allPosts.slice();
+    if (state.tag) list = list.filter(p => JSON.parse(p.tags || '[]').indexOf(state.tag) !== -1);
+    if (state.kw) {
+      const kw = state.kw.toLowerCase();
+      list = list.filter(p => (p.title + ' ' + (p.description || '') + ' ' + JSON.parse(p.tags || '[]').join(' ')).toLowerCase().indexOf(kw) !== -1);
+    }
+    list.sort((a, b) => state.desc ? (a.pub_date < b.pub_date ? 1 : -1) : (a.pub_date > b.pub_date ? 1 : -1));
+    renderPosts(list);
   }
 
   async function loadBlogPosts() {
     try {
       const res = await fetch('/api/posts');
       allPosts = await res.json();
-      renderPosts(allPosts);
+      renderStats();
+      renderTagChips();
+      applyFilters();
     } catch (e) {
       document.getElementById('blog-list').innerHTML = '<p style="color:red;">加载失败，请刷新重试</p>';
     }
   }
 
   document.getElementById('search-input').addEventListener('input', (e) => {
-    filterPosts(e.target.value);
+    state.kw = e.target.value.trim();
+    applyFilters();
+  });
+
+  document.getElementById('sort-btn').addEventListener('click', () => {
+    state.desc = !state.desc;
+    document.getElementById('sort-btn').textContent = state.desc ? '↓ 最新在前' : '↑ 最旧在前';
+    applyFilters();
   });
 
   loadBlogPosts();
