@@ -1,0 +1,202 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const pageTitle = "登录 / 注册";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="user-card">
+    <div class="tabs">
+      <button type="button" id="tab-login" class="tab active">登录</button>
+      <button type="button" id="tab-register" class="tab">注册</button>
+    </div>
+
+    <div id="logged-panel" style="display:none;text-align:center;padding:2rem 0;">
+      <p id="logged-text" style="font-size:1.1rem;margin-bottom:1.2rem;"></p>
+      <div style="display:flex;gap:0.5rem;justify-content:center;">
+        <button type="button" class="ios-btn-danger" id="btn-logout">退出登录</button>
+        <a href="/" class="ios-btn-secondary" style="text-decoration:none;">回首页</a>
+      </div>
+    </div>
+
+    <form id="auth-form">
+      <div class="form-field">
+        <label>用户名</label>
+        <input type="text" id="username" placeholder="2-16 个字符" autocomplete="username" />
+      </div>
+      <div class="form-field">
+        <label>密码</label>
+        <input type="password" id="password" placeholder="至少 6 位" autocomplete="current-password" />
+      </div>
+      <p id="auth-error" class="error"></p>
+      <button type="submit" class="ios-btn" id="submit-btn" style="width:100%;">登录</button>
+    </form>
+  </div>
+</BaseLayout>
+
+<style>
+  .user-card {
+    max-width: 420px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+
+  .tab {
+    padding: 0.45rem 1.4rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.04);
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab.active {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: #6366f1;
+  }
+
+  .form-field { margin-bottom: 1rem; }
+  .form-field label {
+    display: block;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    color: #1d1d1f;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .error {
+    color: #ef4444;
+    font-size: 0.85rem;
+    min-height: 1.2em;
+    margin: 0 0 0.5rem;
+  }
+
+  .ios-btn {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 999px;
+    color: #6366f1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .ios-btn:hover { background: rgba(99, 102, 241, 0.2); }
+
+  .ios-btn-secondary {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    color: #555;
+    font-size: 0.95rem;
+  }
+
+  .ios-btn-danger {
+    display: inline-block;
+    padding: 0.55rem 1.2rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 999px;
+    color: #ef4444;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+</style>
+
+<script is:inline>
+  let mode = 'login';
+
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const submitBtn = document.getElementById('submit-btn');
+
+  function switchMode(m) {
+    mode = m;
+    tabLogin.classList.toggle('active', m === 'login');
+    tabRegister.classList.toggle('active', m === 'register');
+    submitBtn.textContent = m === 'login' ? '登录' : '注册';
+    document.getElementById('auth-error').textContent = '';
+  }
+  tabLogin.addEventListener('click', () => switchMode('login'));
+  tabRegister.addEventListener('click', () => switchMode('register'));
+
+  document.getElementById('auth-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errEl = document.getElementById('auth-error');
+    errEl.textContent = '';
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const res = await fetch(mode === 'login' ? '/api/login' : '/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('mayu_token', data.token);
+      localStorage.setItem('mayu_user', data.username);
+      window.location.href = '/';
+    } else {
+      errEl.textContent = data.error || '操作失败';
+    }
+  });
+
+  // 已登录则显示面板
+  const user = localStorage.getItem('mayu_user');
+  const token = localStorage.getItem('mayu_token');
+  if (user && token) {
+    document.getElementById('auth-form').style.display = 'none';
+    document.querySelector('.tabs').style.display = 'none';
+    const panel = document.getElementById('logged-panel');
+    panel.style.display = 'block';
+    document.getElementById('logged-text').textContent = '👤 当前登录：' + user;
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await fetch('/api/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      }).catch(() => {});
+      localStorage.removeItem('mayu_token');
+      localStorage.removeItem('mayu_user');
+      window.location.reload();
+    });
+  }
+</script>
