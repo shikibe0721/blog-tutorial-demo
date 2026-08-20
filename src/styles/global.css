@@ -279,3 +279,20 @@ html.dark input:focus, html.dark textarea:focus {
 html.dark .about-card, html.dark .home-card, html.dark .admin-container, html.dark .user-card, html.dark .calendar {
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 16px rgba(255, 255, 255, 0.05) !important;
 }
+/* ========== 社交纯文本项 ========== */
+.socials .social-text {
+  display: block;
+  padding: 0.45rem 0.8rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #555;
+  font-size: 0.9rem;
+  cursor: default;
+}
+
+html.dark .socials .social-text {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #b8b8cc;
+}
