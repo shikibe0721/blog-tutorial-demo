@@ -196,12 +196,13 @@ const pageTitle = "博客管理后台";
   }
   .ios-btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
-  /* 文章列表项 */
-  .post-item {
-    padding: 1rem;
+  /* === 关键：用 :global() 让 JS 动态生成的元素也能匹配样式 === */
+  :global(.post-item) {
+    padding: 1rem 1.2rem;
     margin-bottom: 0.6rem;
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 14px;
     display: flex;
@@ -209,12 +210,30 @@ const pageTitle = "博客管理后台";
     align-items: center;
     transition: background 0.2s;
   }
-  .post-item:hover { background: rgba(255, 255, 255, 0.5); }
-  .post-item-info { flex: 1; }
-  .post-item-title { font-weight: 600; color: #1d1d1f; font-size: 1rem; }
-  .post-item-date { color: #888; font-size: 0.8rem; margin-top: 0.2rem; }
-  .post-item-actions { display: flex; gap: 0.3rem; }
-  .post-item-actions button { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+  :global(.post-item:hover) {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  :global(.post-item-info) {
+    flex: 1;
+  }
+  :global(.post-item-title) {
+    font-weight: 600;
+    color: #1d1d1f;
+    font-size: 1rem;
+  }
+  :global(.post-item-date) {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+  }
+  :global(.post-item-actions) {
+    display: flex;
+    gap: 0.3rem;
+  }
+  :global(.post-item-actions button) {
+    padding: 0.3rem 0.8rem !important;
+    font-size: 0.8rem !important;
+  }
 </style>
 
 <script is:inline>
@@ -269,7 +288,6 @@ const pageTitle = "博客管理后台";
     document.getElementById('password').value = '';
   }
 
-  // 回车键登录
   document.getElementById('password').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') login();
   });
