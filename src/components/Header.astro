@@ -9,6 +9,7 @@ const navLinks = [
 <header class="ios-header" id="nav-bar">
   <a href="/" class="logo">Mayu's Blog</a>
   <div class="right-side">
+    <div class="user-area" id="user-area"></div>
     <button type="button" class="theme-btn" id="theme-toggle" title="切换深浅模式">🌙</button>
     <ul id="mobile-nav" class="desktop-nav">
       {navLinks.map((link) => (
@@ -109,6 +110,57 @@ const navLinks = [
     color: #1d1d1f;
   }
 
+  /* === 用户区域（JS 动态生成，必须用 :global） === */
+  :global(.user-area) { display: flex; align-items: center; gap: 0.2rem; }
+  :global(.user-chip) {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    max-width: 12ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  :global(.user-logout) {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    color: #888;
+    transition: all 0.2s;
+  }
+  :global(.user-logout:hover) { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+  :global(.user-login) {
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #6366f1;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  :global(.user-login:hover) { background: rgba(99, 102, 241, 0.2); }
+
+  :global(html.dark .user-chip) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e8e8f0;
+  }
+  :global(html.dark .user-login) {
+    background: rgba(165, 166, 255, 0.12);
+    border-color: rgba(165, 166, 255, 0.25);
+    color: #a5a6ff;
+  }
+  :global(html.dark .user-logout) { color: #8888a0; }
+
   @media screen and (max-width: 636px) {
     .menu-btn {
       display: block;
@@ -142,6 +194,33 @@ const navLinks = [
 </style>
 
 <script is:inline>
+  // === 用户区域渲染 ===
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderUserArea() {
+    const area = document.getElementById('user-area');
+    const user = localStorage.getItem('mayu_user');
+    const token = localStorage.getItem('mayu_token');
+    if (user && token) {
+      area.innerHTML = '<span class="user-chip" title="' + esc(user) + '">👤 ' + esc(user) + '</span><button type="button" class="user-logout" id="nav-logout" title="退出登录">⎋</button>';
+      document.getElementById('nav-logout').addEventListener('click', async () => {
+        await fetch('/api/logout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        }).catch(() => {});
+        localStorage.removeItem('mayu_token');
+        localStorage.removeItem('mayu_user');
+        renderUserArea();
+      });
+    } else {
+      area.innerHTML = '<a href="/user" class="user-login">登录</a>';
+    }
+  }
+  renderUserArea();
+
   // === 深浅模式切换 ===
   const themeBtn = document.getElementById('theme-toggle');
   function updateThemeIcon() {
