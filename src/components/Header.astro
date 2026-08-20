@@ -38,16 +38,17 @@ const navLinks = [
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.22);
-    backdrop-filter: blur(4px) saturate(180%);
-    -webkit-backdrop-filter: blur(4px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 14px rgba(255, 255, 255, 0.22);
     animation: glass-settle 1.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
+  /* 注意：这里只动画 transform，不碰 backdrop-filter（Chrome bug） */
   @keyframes glass-settle {
-    0% { transform: translateX(-50%) scale(1); backdrop-filter: blur(0px) saturate(180%); -webkit-backdrop-filter: blur(0px) saturate(180%); }
-    50% { transform: translateX(-50%) scale(1.02); backdrop-filter: blur(2px) saturate(180%); -webkit-backdrop-filter: blur(2px) saturate(180%); }
-    100% { transform: translateX(-50%) scale(1); backdrop-filter: blur(4px) saturate(180%); -webkit-backdrop-filter: blur(4px) saturate(180%); }
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.02); }
+    100% { transform: translateX(-50%) scale(1); }
   }
   .ios-header::after {
     content: ''; position: absolute; inset: 0; border-radius: 999px; pointer-events: none;
@@ -73,12 +74,13 @@ const navLinks = [
   .theme-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.05); }
 
   .desktop-nav { position: relative; display: flex; list-style: none; margin: 0; padding: 0; gap: 0.25rem; }
+
   :global(.nav-indicator) {
     position: absolute; top: 0; left: 0; height: 100%; border-radius: 999px;
-    background: rgba(255, 255, 255, 0.4); pointer-events: none; z-index: 0;
+    background: rgba(255, 255, 255, 0.4); pointer-events: none; z-index: 2;
     transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.6, 1), width 0.35s cubic-bezier(0.3, 1.4, 0.6, 1);
   }
-  :global(html.dark .nav-indicator) { background: rgba(255, 255, 255, 0.12); }
+  :global(html.dark .nav-indicator) { background: rgba(165, 166, 255, 0.25); }
   :global(.nav-indicator.duang) { animation: duang 0.35s cubic-bezier(0.3, 1.4, 0.6, 1); }
   @keyframes duang {
     0% { scale: 1 1; } 35% { scale: 1.06 0.92; } 70% { scale: 0.97 1.04; } 100% { scale: 1 1; }
@@ -87,12 +89,15 @@ const navLinks = [
   .desktop-nav a {
     position: relative; z-index: 1; display: block; padding: 0.4rem 0.9rem;
     border-radius: 999px; text-decoration: none; font-size: 0.9rem; font-weight: 500; color: #1d1d1f;
-    background: transparent; /* 桌面端默认透明 */
+    transition: color 0.2s ease;
   }
 
-  /* 彻底干掉桌面端的 hover 背景，只留小球 */
   @media screen and (min-width: 637px) {
-    .desktop-nav a:hover { background: transparent !important; }
+    .desktop-nav a {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
   }
 
   .menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 0.3rem; color: #1d1d1f; }
@@ -119,18 +124,18 @@ const navLinks = [
     :global(.nav-indicator) { display: none; }
     .desktop-nav {
       display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; flex-direction: column;
-      background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 20px; padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 20px; padding: 0.5rem;
     }
+    :global(.desktop-nav.open) { display: flex; }
     .desktop-nav a { padding: 0.7rem 1rem; border-radius: 14px; }
-    /* 手机端保留 hover 高亮 */
     .desktop-nav a:hover { background: rgba(255, 255, 255, 0.35) !important; }
     html.dark .desktop-nav a:hover { background: rgba(255, 255, 255, 0.1) !important; }
-    :global(.menu-btn[aria-expanded="true"]) ~ .desktop-nav { display: flex; }
   }
 </style>
 
 <script is:inline>
+  // === 滑动高亮小球 ===
   (function () {
     const navUl = document.querySelector('.desktop-nav');
     if (!navUl) return;
@@ -143,7 +148,7 @@ const navLinks = [
       const path = window.location.pathname;
       let found = null;
       links.forEach(a => { if (a.getAttribute('href') === path) found = a; });
-      if (!found) links.forEach(a => { if (a.getAttribute('href') !== '/' && path.indexOf(a.getAttribute('href')) === 0) found = a; });
+      if (!found) links.forEach(a => { const h = a.getAttribute('href'); if (h !== '/' && path.indexOf(h) === 0) found = a; });
       return found || links[0];
     }
     const active = activeLink();
@@ -154,7 +159,11 @@ const navLinks = [
       indicator.style.transform = 'translateX(' + link.offsetLeft + 'px)';
       if (instant) { void indicator.offsetWidth; indicator.style.transition = ''; }
     }
-    function duang() { indicator.classList.remove('duang'); void indicator.offsetWidth; indicator.classList.add('duang'); }
+    function duang() {
+      indicator.classList.remove('duang');
+      void indicator.offsetWidth;
+      indicator.classList.add('duang');
+    }
 
     requestAnimationFrame(() => move(active, true));
     window.addEventListener('load', () => move(active, true));
@@ -162,12 +171,13 @@ const navLinks = [
 
     links.forEach(a => {
       a.addEventListener('mouseenter', () => move(a));
-      a.addEventListener('mousedown', () => duang());
+      a.addEventListener('click', () => { move(a); duang(); });
     });
     navUl.addEventListener('mouseleave', () => move(active));
     indicator.addEventListener('transitionend', (e) => { if (e.propertyName === 'transform') duang(); });
   })();
 
+  // === 用户区域 ===
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function renderUserArea() {
     const area = document.getElementById('user-area');
@@ -185,6 +195,7 @@ const navLinks = [
   }
   renderUserArea();
 
+  // === 主题切换 ===
   const themeBtn = document.getElementById('theme-toggle');
   function updateThemeIcon() { themeBtn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; }
   themeBtn.addEventListener('click', () => {
@@ -194,15 +205,17 @@ const navLinks = [
   });
   updateThemeIcon();
 
+  // === 汉堡菜单 ===
   const btn = document.querySelector('.menu-btn');
   const nav = document.getElementById('mobile-nav');
   if (btn && nav) {
     btn.addEventListener('click', () => {
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(nav.classList.contains('open')));
     });
   }
 
+  // === 滚动加深磨砂 ===
   window.addEventListener('scroll', () => {
     const bar = document.getElementById('nav-bar');
     if (window.scrollY > 10) bar.classList.add('scrolled');
