@@ -1,10 +1,9 @@
-/* ========== G4 连续圆角 · 全站统一 ==========
-   改圆角只改 --r 一个数字 */
 :root {
   --r: 12px;
 }
 
-.ios-header, .home-card, .about-card, .about-small, .admin-container,
+/* 已经删除了 .ios-header 和 .nav-indicator */
+.home-card, .about-card, .about-small, .admin-container,
 #post-form, .calendar, .user-card, .comments-card, .post-item,
 .ios-btn, .ios-btn-secondary, .ios-btn-danger, .theme-btn, .tab, .date-btn,
 .like-btn, .react-btn, .comment-submit, .tag-chip, .sort-btn, .admin-link,
@@ -15,7 +14,7 @@
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.08));
 }
 
-html.dark .ios-header, html.dark .home-card, html.dark .about-card,
+html.dark .home-card, html.dark .about-card,
 html.dark .about-small, html.dark .admin-container, html.dark #post-form,
 html.dark .calendar, html.dark .user-card, html.dark .comments-card,
 html.dark .post-item, html.dark .ios-btn, html.dark .ios-btn-secondary,
@@ -29,7 +28,6 @@ html.dark .gb-editor, html.dark .gb-send, html.dark .gb-login-hint {
   filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.4));
 }
 
-/* 只统一圆角、不加阴影的小件 */
-.desktop-nav, .nav-indicator, .cal-day {
+.desktop-nav, .cal-day {
   border-radius: var(--r) !important;
 }
