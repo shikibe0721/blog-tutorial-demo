@@ -13,17 +13,12 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
-    <!-- 🌙 主题：手动优先，没手动选过就 19:00-07:00 自动暗 -->
     <script is:inline>
       (function () {
         var saved = localStorage.getItem('theme');
         var dark;
-        if (saved) {
-          dark = saved === 'dark';
-        } else {
-          var h = new Date().getHours();
-          dark = (h >= 19 || h < 7);
-        }
+        if (saved) { dark = saved === 'dark'; }
+        else { var h = new Date().getHours(); dark = (h >= 19 || h < 7); }
         if (dark) document.documentElement.classList.add('dark');
       })();
     </script>
@@ -39,34 +34,27 @@ const { pageTitle } = Astro.props;
       import "../scripts/menu.js";
     </script>
     <script src="../scripts/g3.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script is:inline src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+    
+    <!-- 关键：加上 defer，脚本在后台下载，绝不卡页面渲染 -->
+    <script is:inline defer src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script is:inline defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+    
     <script is:inline>
-      if (window.Lenis) {
-        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-        function raf(time) {
-          lenis.raf(time);
+      // 脚本加了 defer，所以要用 DOMContentLoaded 等 DOM 解析完再初始化
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.Lenis) {
+          const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+          function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
           requestAnimationFrame(raf);
         }
-        requestAnimationFrame(raf);
-      }
-
-      // 收敛版入场：慢一点、轻一点
-      if (window.AOS) {
-        AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 40 });
-      } else {
-        document.querySelectorAll('[data-aos]').forEach(el => el.removeAttribute('data-aos'));
-      }
-    </script>
-    <script is:inline>
-      document.addEventListener('DOMContentLoaded', () => {
+        if (window.AOS) {
+          AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 40 });
+        } else {
+          document.querySelectorAll('[data-aos]').forEach(el => el.removeAttribute('data-aos'));
+        }
         if (typeof liquidGL !== 'undefined') {
           liquidGL({
-            target: '[data-liquid-glass]',
-            snapshot: 'body',
-            resolution: 0.5,
-            frost: 0.1,
-            aberration: 0.02,
+            target: '[data-liquid-glass]', snapshot: 'body', resolution: 0.5, frost: 0.1, aberration: 0.02,
           });
         }
       });
