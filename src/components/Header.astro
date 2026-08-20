@@ -6,6 +6,8 @@ const navLinks = [
 ];
 ---
 
+<header class="ios-header" id="nav-bar">
+  <a href="/" class="logo">Mayu's Blog</a>
   <div class="right-side">
     <button type="button" class="theme-btn" id="theme-toggle" title="切换深浅模式">🌙</button>
     <ul id="mobile-nav" class="desktop-nav">
@@ -108,7 +110,6 @@ const navLinks = [
     color: #1d1d1f;
   }
 
-  /* === 用户区域（JS 动态生成，必须用 :global） === */
   :global(.user-area) { display: flex; align-items: center; gap: 0.2rem; }
   :global(.user-chip) {
     padding: 0.3rem 0.8rem;
@@ -192,7 +193,6 @@ const navLinks = [
 </style>
 
 <script is:inline>
-  // === 用户区域渲染 ===
   function esc(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -219,7 +219,6 @@ const navLinks = [
   }
   renderUserArea();
 
-  // === 深浅模式切换 ===
   const themeBtn = document.getElementById('theme-toggle');
   function updateThemeIcon() {
     const isDark = document.documentElement.classList.contains('dark');
@@ -233,7 +232,6 @@ const navLinks = [
   });
   updateThemeIcon();
 
-  // === 汉堡菜单 ===
   const btn = document.querySelector('.menu-btn');
   const nav = document.getElementById('mobile-nav');
   if (btn && nav) {
@@ -243,7 +241,6 @@ const navLinks = [
     });
   }
 
-  // === 滚动加深磨砂 ===
   window.addEventListener('scroll', () => {
     const bar = document.getElementById('nav-bar');
     if (window.scrollY > 10) {
