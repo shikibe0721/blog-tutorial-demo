@@ -12,7 +12,12 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
-    <!-- liquidGL CDN -->
+    <!-- 🌙 深色模式防闪烁 -->
+    <script is:inline>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/liquid-gl@latest/dist/liquidGL.min.js"></script>
   </head>
   <body>
@@ -23,7 +28,6 @@ const { pageTitle } = Astro.props;
     <script>
       import "../scripts/menu.js";
     </script>
-    <!-- liquidGL 初始化 -->
     <script is:inline>
       document.addEventListener('DOMContentLoaded', () => {
         if (typeof liquidGL !== 'undefined') {
