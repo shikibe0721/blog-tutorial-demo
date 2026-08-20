@@ -131,7 +131,7 @@ const navLinks = [
     gap: 0.25rem;
   }
 
-  .nav-indicator {
+  :global(.nav-indicator) {
     position: absolute;
     top: 0;
     left: 0;
@@ -145,13 +145,12 @@ const navLinks = [
       transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
       width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  html.dark .nav-indicator {
+  :global(html.dark .nav-indicator) {
     background: rgba(255, 255, 255, 0.12);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 0 8px rgba(255, 255, 255, 0.06);
   }
 
-  /* duang 弹一下 */
-  .nav-indicator.duang {
+  :global(.nav-indicator.duang) {
     animation: duang 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   @keyframes duang {
@@ -240,7 +239,7 @@ const navLinks = [
   @media screen and (max-width: 636px) {
     .menu-btn { display: block; }
 
-    .nav-indicator { display: none; }
+    :global(.nav-indicator) { display: none; }
 
     .desktop-nav {
       display: none;
@@ -323,7 +322,6 @@ const navLinks = [
     });
     navUl.addEventListener('mouseleave', () => move(active));
 
-    // 移动完成时 duang
     indicator.addEventListener('transitionend', (e) => {
       if (e.propertyName === 'transform') duang();
     });
