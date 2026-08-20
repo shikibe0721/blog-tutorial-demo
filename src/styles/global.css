@@ -352,3 +352,13 @@ html.dark .date-btn {
   background: rgba(165, 166, 255, 0.12) !important;
   border-color: rgba(165, 166, 255, 0.25) !important;
 }
+/* ========== 收敛入场动画：只轻轻浮起一点 ========== */
+[data-aos] {
+  transition-duration: 0.8s !important;
+}
+[data-aos="fade-up"] {
+  transform: translate3d(0, 14px, 0) !important;
+}
+[data-aos="fade-up"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
