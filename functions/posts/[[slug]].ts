@@ -338,7 +338,7 @@ export async function onRequestGet() {
         .replace(/\\n/g, '<br/>');
       content = '<p>' + content + '</p>';
       content = content.replace(/@@CODE(\d+)@@/g, function (m, i) { return codeBlocks[+i]; });
-      content = content.replace(/<p><pre/g, '<pre').replace(/<\/pre><\/p>/g, '</pre>').replace(/<p><br\/><\/p>/g, '');
+      content = content.split('<p><pre').join('<pre').split('</pre></p>').join('</pre>').split('<p><br/></p>').join('');
 
       container.innerHTML = '<article class="card">' +
         '<h1 class="title">' + esc(post.title) + '</h1>' +
