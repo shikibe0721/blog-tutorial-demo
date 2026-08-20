@@ -400,3 +400,8 @@ html.dark .cal-day.selected { background: #6366f1; color: #fff; }
 html.dark .calendar {
   background: rgba(24, 24, 40, 0.88) !important;
 }
+/* ========== 导航栏磨砂双保险 ========== */
+.ios-header {
+  backdrop-filter: blur(4px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(180%) !important;
+}
