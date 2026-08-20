@@ -6,7 +6,13 @@ export async function onRequestGet() {
 <meta name="viewport" content="width=device-width" />
 <title>文章详情</title>
 <script>
-  if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+  (function () {
+    var saved = localStorage.getItem('theme');
+    var dark;
+    if (saved) { dark = saved === 'dark'; }
+    else { var h = new Date().getHours(); dark = (h >= 19 || h < 7); }
+    if (dark) document.documentElement.classList.add('dark');
+  })();
 </script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
@@ -109,7 +115,7 @@ export async function onRequestGet() {
   }
 
   /* === 点赞 === */
-  .like-row { text-align: center; margin: 1.5rem 0; }
+  .like-row { text-align: center; margin: 1.5rem 0 0.8rem; }
   .like-btn {
     display: inline-flex; align-items: center; gap: 0.4rem;
     padding: 0.5rem 1.2rem; border-radius: 999px;
@@ -122,6 +128,23 @@ export async function onRequestGet() {
   .like-btn.liked { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3); color: #6366f1; }
   html.dark .like-btn { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #e8e8f0; }
   html.dark .like-btn.liked { background: rgba(165,166,255,0.15); border-color: rgba(165,166,255,0.3); color: #a5a6ff; }
+
+  /* === 表情快评 === */
+  .react-row { display: flex; justify-content: center; gap: 0.5rem; margin: 0 0 1.5rem; flex-wrap: wrap; }
+  .react-btn {
+    padding: 0.35rem 0.9rem; border-radius: 999px;
+    background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    font-size: 0.9rem; cursor: pointer; transition: all 0.2s; color: #1d1d1f;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+  .react-btn:hover { transform: scale(1.08); }
+  .react-btn.mine { background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.35); }
+  .react-n { font-size: 0.75rem; color: #888; }
+  .react-btn.mine .react-n { color: #6366f1; }
+  html.dark .react-btn { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: #e8e8f0; }
+  html.dark .react-btn.mine { background: rgba(165,166,255,0.15); border-color: rgba(165,166,255,0.35); }
+  html.dark .react-n { color: #8888a0; }
 
   /* === 评论区 === */
   .comments-card {
@@ -202,6 +225,7 @@ export async function onRequestGet() {
     <nav class="nav-links">
       <a href="/">首页</a>
       <a href="/blog">博客</a>
+      <a href="/archive">归档</a>
       <a href="/about">关于</a>
     </nav>
     <div class="user-area" id="user-area"></div>
@@ -214,6 +238,7 @@ export async function onRequestGet() {
     <div class="like-row">
       <button type="button" id="like-btn" class="like-btn">👍 <span id="like-count">0</span></button>
     </div>
+    <div class="react-row" id="react-row"></div>
     <div class="comments-card">
       <h3 class="comments-title">💬 评论</h3>
       <div id="comment-list"></div>
@@ -292,6 +317,27 @@ export async function onRequestGet() {
         delete btn.dataset.morphing;
       }, 460);
     }, 1600);
+  }
+
+  // === 表情快评 ===
+  var EMOJIS = ['👍', '❤️', '😂', '🤔'];
+  async function loadReactions(slug) {
+    var res = await fetch('/api/reactions?slug=' + encodeURIComponent(slug), { headers: authHeaders() });
+    if (!res.ok) return;
+    var data = await res.json();
+    var row = document.getElementById('react-row');
+    row.innerHTML = EMOJIS.map(function (e) {
+      var c = data.counts[e] || 0;
+      var mine = data.mine.indexOf(e) !== -1;
+      return '<button type="button" class="react-btn' + (mine ? ' mine' : '') + '" data-emoji="' + e + '">' + e + (c > 0 ? ' <span class="react-n">' + c + '</span>' : '') + '</button>';
+    }).join('');
+    row.querySelectorAll('.react-btn').forEach(function (b) {
+      b.addEventListener('click', async function () {
+        if (!getToken()) { window.location.href = '/user'; return; }
+        var r = await fetch('/api/reactions', { method: 'POST', headers: authHeaders(), body: JSON.stringify({ slug: slug, emoji: b.dataset.emoji }) });
+        if (r.ok) loadReactions(slug);
+      });
+    });
   }
 
   async function loadLike(slug) {
@@ -393,6 +439,7 @@ export async function onRequestGet() {
 
       document.getElementById('engage').style.display = 'block';
       loadLike(slug);
+      loadReactions(slug);
       loadComments(slug);
       renderCommentForm(slug);
     } catch (e) {
