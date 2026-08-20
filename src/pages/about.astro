@@ -1,128 +1,139 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-
-const pageTitle = "关于我 | About";
-
-// ✏️ 改这里：个人信息
-const identity = {
-  firstName: "Mayu",
-  country: "中国",
-  occupation: "人类",
-  hobbies: ["玩", "听音乐", "探索新技术"],
-};
-
-// ✏️ 改这里：技能列表
-const skills = ["HTML", "CSS", "JavaScript", "前面提到的都不会喵~"];
-
-// ✏️ 改这里：社交链接
-const socialLinks = [
-  { name: "GitHub", url: "https://github.com/shikibe0721", text: "shikibe0721" },
-  { name: "Telegram (电报)", url: "https://t.me/Shikibe0721", text: "@Shikibe0721" },
-  { name: "X (Twitter)", url: "https://x.com/Shikibe_MayuX", text: "@Shikibe_MayuX" },
-  { name: "QQ", url: "#", text: "先加tg,我看到就回" },
-  { name: "微信 (WeChat)", url: "#", text: "先加tg,我看到就回" },
-];
+const pageTitle = "关于我";
 ---
 
-<style>
-  .about-card {
-    max-width: 640px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    color: #333;
-  }
-  h1 {
-    color: #6366f1;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  .subtitle {
-    color: #6b7280;
-    margin-bottom: 1.5rem;
-  }
-  h2 {
-    margin-top: 1.5rem;
-    font-size: 1.2rem;
-    color: #333333;
-  }
-  .skill {
-    display: inline-block;
-    margin: 0.25rem;
-    padding: 0.3rem 0.8rem;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #4a4a6a;
-    border-radius: 999px;
-    font-size: 0.9rem;
-  }
-  a {
-    color: #6366f1;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  .social-list {
-    list-style: none;
-    padding: 0;
-  }
-  .social-list li {
-    margin-bottom: 0.6rem;
-    font-size: 1rem;
-  }
-  .handle {
-    color: #333333;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-family: monospace;
-  }
-</style>
-
 <BaseLayout pageTitle={pageTitle}>
-    <div class="about-card" data-liquid-glass data-aos="fade" data-tilt>
-    <h1>你好，我是 {identity.firstName} 👋</h1>
-    <p class="subtitle">来自{identity.country} · {identity.occupation}</p>
+  <div class="about-grid">
+    <!-- ═══ 大框：自我介绍（改这里的文字） ═══ -->
+    <div class="about-big" data-liquid-glass data-aos="fade">
+      <h2>👋 你好，我是 Mayu</h2>
+      <p>一个不会用CNAME的人类。</p>
+      <p>这个博客记录了我的点点滴滴：折腾AI以及一些奇奇怪怪的想法。</p>
+      <p>(我说我想成为人类有没有懂的)</p>
+      <p>如果你也是同类，欢迎联系我 ↓</p>
+    </div>
 
-    <p>
-      欢迎来到我的博客！这里记录我的技术笔记和生活随笔。
-    </p>
+    <!-- ═══ 右侧小框们 ═══ -->
+    <div class="about-col">
+      <!-- 小框 1：技能（改这里的标签） -->
+      <div class="about-small" data-aos="fade-up" data-tilt>
+        <h3>⚡ 技能</h3>
+        <div class="chips">
+          <span class="skill">Astro</span>
+          <span class="skill">摸鱼</span>
+          <span class="skill">HTML/CSS</span>
+          <span class="skill">摸鱼</span>
+          <span class="skill">JavaScript</span>
+          <span class="skill">摸鱼</span>
+          <span class="skill">Cloudflare</span>
+          <span class="skill">摸鱼</span>
+          <span class="skill">前面提到的全都不会,除了摸鱼</span>
+        </div>
+      </div>
 
-    <h2>🎯 我的爱好</h2>
-    <ul>
-      {identity.hobbies.map((hobby) => <li>{hobby}</li>)}
-    </ul>
+            <!-- 小框 2：社交（改链接/ID） -->
+      <div class="about-small" data-aos="fade-up" data-tilt>
+        <h3>🔗 社交</h3>
+        <div class="socials">
+          <a href="https://t.me/Shikibe0721" target="_blank" rel="noopener">✈️ Telegram</a>
+          <a href="https://github.com/Shikibe0721" target="_blank" rel="noopener">🐙 GitHub</a>
+          <a href="https://x.com/Shikibe_MayuX" target="_blank" rel="noopener">𝕏 X</a>
+          <a href="https://wa.me/18121434090" target="_blank" rel="noopener">🟢 WhatsApp</a>
+          <span class="social-text">🐧 QQ：加tg或者wa,看到回</span>
+          <span class="social-text">💬 微信：加tg或者wa,看到回</span>
+        </div>
+      </div>
 
-    <h2>🛠️ 技能栈</h2>
-    <p>
-      {skills.map((skill) => <span class="skill">{skill}</span>)}
-    </p>
-
-    <h2>🔗 社交链接</h2>
-    <ul class="social-list">
-      {socialLinks.map((link) => (
-        <li>
-          <strong>{link.name}:</strong> 
-          {
-            link.url !== "#" ? (
-              <a href={link.url} target="_blank" rel="noopener noreferrer">{link.text}</a>
-            ) : (
-              <span class="handle">{link.text}</span>
-            )
-          }
-        </li>
-      ))}
-    </ul>
+      <!-- 小框 3：爱好（改这里的标签） -->
+      <div class="about-small" data-aos="fade-up" data-tilt>
+        <h3>🎮 爱好</h3>
+        <div class="chips">
+          <span class="skill">睡觉</span>
+          <span class="skill">折磨AI</span>
+          <span class="skill">PLAY</span>
+          <span class="skill">网上冲浪</span>
+        </div>
+      </div>
+    </div>
   </div>
 </BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 1rem;
+    align-items: start;
+    margin: 1.5rem 0;
+  }
+
+  /* === 大框 === */
+  .about-big {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.15);
+  }
+
+  .about-big h2 { margin: 0 0 1rem; font-size: 1.6rem; color: #1d1d1f; }
+  .about-big p { color: #444; line-height: 1.8; margin: 0.6rem 0; }
+
+  /* === 小框列 === */
+  .about-col { display: flex; flex-direction: column; gap: 1rem; }
+
+  .about-small {
+    padding: 1.2rem 1.4rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.15);
+  }
+
+  .about-small h3 { margin: 0 0 0.7rem; font-size: 1rem; color: #1d1d1f; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .skill {
+    padding: 0.2rem 0.7rem;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+
+  .socials { display: flex; flex-direction: column; gap: 0.4rem; }
+  .socials a {
+    display: block;
+    padding: 0.45rem 0.8rem;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .socials a:hover { background: rgba(99, 102, 241, 0.16); transform: translateX(4px); }
+
+  /* === 深色模式 === */
+  html.dark .about-big, html.dark .about-small {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 16px rgba(255, 255, 255, 0.05);
+  }
+  html.dark .about-big h2, html.dark .about-small h3 { color: #f2f2fa; }
+  html.dark .about-big p { color: #c2c2d4; }
+  html.dark .skill { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: #c9c9ff; }
+  html.dark .socials a { background: rgba(165, 166, 255, 0.1); border-color: rgba(165, 166, 255, 0.2); color: #a5a6ff; }
+
+  /* === 手机端：上下排列 === */
+  @media screen and (max-width: 700px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+</style>
