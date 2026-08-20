@@ -6,12 +6,12 @@ export async function onRequestPost(context: any) {
     const { username, password } = await request.json();
     const name = String(username || '').trim();
 
-    if (!name || !password) return json({ error: '用户名和密码不能为空' }, 400);
+    if (!name || !password) return json({ error: '用户名和密码不可以为空的说!' }, 400);
     if (!/^[\u4e00-\u9fa5a-zA-Z0-9_]{2,16}$/.test(name)) return json({ error: '用户名只能含中文/字母/数字/下划线，2-16 个字符' }, 400);
     if (String(password).length < 6) return json({ error: '密码至少 6 位' }, 400);
 
     const existing = await env.DB.prepare('SELECT id FROM users WHERE username = ?').bind(name).first();
-    if (existing) return json({ error: '这个用户名已经被注册了' }, 409);
+    if (existing) return json({ error: '这个用户名已经被注册了的说!' }, 409);
 
     const salt = crypto.randomUUID();
     const hash = await hashPassword(String(password), salt);
@@ -24,6 +24,6 @@ export async function onRequestPost(context: any) {
 
     return json({ token, username: name });
   } catch {
-    return json({ error: '注册失败，请重试' }, 500);
+    return json({ error: '注册失败，请重试的说(我也不知道为啥,实在不行加我tg直接给你构建个新版本)' }, 500);
   }
 }
