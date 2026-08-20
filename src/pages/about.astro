@@ -14,7 +14,7 @@ const identity = {
 // ✏️ 改这里：技能列表
 const skills = ["HTML", "CSS", "JavaScript", "前面提到的都不会喵~"];
 
-// ✏️ 改这里：社交链接 (⚠️请把中文占位符换成你真实的账号)
+// ✏️ 改这里：社交链接
 const socialLinks = [
   { name: "GitHub", url: "https://github.com/shikibe0721", text: "shikibe0721" },
   { name: "Telegram (电报)", url: "https://t.me/Shikibe0721", text: "@Shikibe0721" },
@@ -36,9 +36,6 @@ const socialLinks = [
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     color: #333;
-    <div class="about-card" data-liquid-glass>
-  <!-- 内容不变 -->
-</div>
   }
   h1 {
     color: #6366f1;
@@ -94,7 +91,7 @@ const socialLinks = [
 </style>
 
 <BaseLayout pageTitle={pageTitle}>
-  <div class="about-card">
+  <div class="about-card" data-liquid-glass>
     <h1>你好，我是 {identity.firstName} 👋</h1>
     <p class="subtitle">来自{identity.country} · {identity.occupation}</p>
 
