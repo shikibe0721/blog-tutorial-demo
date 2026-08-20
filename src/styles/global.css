@@ -332,3 +332,23 @@ html.dark .tag-chip.active {
   border-color: rgba(165, 166, 255, 0.35);
   color: #a5a6ff;
 }
+/* ========== 后台深色模式统一 ========== */
+html.dark #post-form {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+html.dark #post-form h3 { color: #f2f2fa !important; }
+html.dark .form-field label { color: #b8b8cc !important; }
+html.dark #post-form input,
+html.dark #post-form textarea {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e8e8f0 !important;
+}
+html.dark #post-form input::placeholder,
+html.dark #post-form textarea::placeholder { color: #8888a0 !important; }
+html.dark .counter { color: #8888a0 !important; }
+html.dark .date-btn {
+  background: rgba(165, 166, 255, 0.12) !important;
+  border-color: rgba(165, 166, 255, 0.25) !important;
+}
