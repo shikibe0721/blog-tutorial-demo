@@ -170,7 +170,27 @@ export async function onRequestGet() {
   .comment-submit:hover { background: rgba(99,102,241,0.2); }
   html.dark .comment-submit { background: rgba(165,166,255,0.12); border-color: rgba(165,166,255,0.25); color: #a5a6ff; }
   .login-hint { margin-top: 1rem; font-size: 0.9rem; color: #888; }
-
+  /* === 按钮变形确认动画 === */
+  .comment-submit {
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; white-space: nowrap;
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .comment-submit.morphed {
+    background: rgba(17, 17, 20, 0.9);
+    border-color: rgba(17, 17, 20, 0.9);
+    color: #fff;
+  }
+  html.dark .comment-submit.morphed {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(255, 255, 255, 0.92);
+    color: #111;
+  }
+  .m-check {
+    display: inline-flex; width: 18px; height: 18px; border-radius: 50%;
+    border: 1px solid currentColor; align-items: center; justify-content: center;
+    margin-right: 0.4rem; font-size: 0.7rem; flex-shrink: 0;
+  }
   @media screen and (max-width: 636px) {
     .nav-links { display: none; }
   }
