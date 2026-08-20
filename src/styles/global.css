@@ -136,3 +136,27 @@ html.dark .site-footer { border-top-color: rgba(255, 255, 255, 0.08); }
 html.dark .site-footer p { color: rgba(255, 255, 255, 0.25) !important; }
 html.dark .footer-hidden { color: rgba(255, 255, 255, 0.08) !important; }
 html.dark .footer-hidden:hover { color: rgba(255, 255, 255, 0.35) !important; }
+/* ========== 深色模式补丁：去反光 + 提升可读性 ========== */
+
+/* 所有段落文字提亮 */
+html.dark p {
+  color: #c2c2d4 !important;
+}
+
+/* 去掉卡片顶部的白色反光线 */
+html.dark .home-card,
+html.dark .about-card,
+html.dark .admin-container {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* 导航栏也去掉反光 */
+html.dark .ios-header,
+html.dark .ios-header.scrolled {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 问候语文字提亮 */
+html.dark #greeting {
+  color: #d6d6e6 !important;
+}
