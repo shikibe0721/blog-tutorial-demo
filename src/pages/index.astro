@@ -1,91 +1,109 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-const pageTitle = "我的博客首页";
+import BaseLayout from "../layouts/BaseLayout.astro";
+const pageTitle = "我的博客";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <div class="home-card" data-liquid-glass data-aos="fade" data-tilt>
-    <h2 style="margin:0 0 1rem;font-size:1.8rem;color:#1d1d1f;">欢迎来到我的博客 👋</h2>
-    <p id="greeting" style="font-size:1.15rem;color:#444;margin:1rem 0;min-height:2em;"></p>
-    <button id="new-greeting" class="ios-btn">换一句问候</button>
+  <p style="color:#555;font-size:1.05rem;">记录我Ciallo~的点点滴滴。</p>
+  <p><a href="/admin" class="admin-link">👉 进入管理后台</a></p>
+
+  <div class="search-box" data-aos="fade-up">
+    <input type="text" id="search-input" placeholder="🔍 搜索标题、描述或标签..." />
   </div>
+
+  <div id="blog-list" data-aos="fade-up"><p style="color:#888;">加载中...</p></div>
 </BaseLayout>
 
 <style>
-  .home-card {
-    max-width: 640px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  }
-
-  .ios-btn {
+  .admin-link {
     display: inline-block;
-    padding: 0.5rem 1.2rem;
-    background: rgba(99, 102, 241, 0.12);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    padding: 0.4rem 1rem;
+    background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: 999px;
     color: #6366f1;
-    font-size: 0.95rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    text-decoration: none;
   }
 
-  .ios-btn:hover {
-    background: rgba(99, 102, 241, 0.2);
-    transform: scale(1.03);
+  .search-box {
+    margin: 1.5rem 0 0.5rem;
   }
 
-  .ios-btn:active {
-    transform: scale(0.97);
+  .search-box input {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 1rem;
+    color: #1d1d1f;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
 <script is:inline>
-  const greetings = [
-    "今天也是元气满满的一天！✨",
-    "慢慢来，比较快 🐢",
-    "代码写不出来就先摸会儿鱼 🐟",
-    "Ciallo～(∠・ω< )⌒☆",
-    "每一个 Bug 都是成长的机会 💪",
-    "今天的你比昨天更厉害了一点 📈",
-    "喝杯水，休息一下再继续 ☕",
-    "Ciallo～(∠・ω< )⌒☆",
-    "保持好奇，保持热爱 🔥",
-    "你已经很棒了，别忘了夸夸自己 🌟",
-    "前端的路很长，但风景很好 🏞️",
-    "Ciallo～(∠・ω< )⌒☆",
-  ];
+  let allPosts = [];
 
-  let typedInstance = null;
-
-  function typeRandom() {
-    const text = greetings[Math.floor(Math.random() * greetings.length)];
-    if (typedInstance) {
-      typedInstance.destroy();
-      typedInstance = null;
+  function renderPosts(posts) {
+    const container = document.getElementById('blog-list');
+    if (posts.length === 0) {
+      container.innerHTML = '<p style="color:#888;">没有找到匹配的文章 🥲</p>';
+      return;
     }
-    if (window.Typed) {
-      typedInstance = new Typed('#greeting', {
-        strings: [text],
-        typeSpeed: 45,
-        showCursor: true,
-        cursorChar: '✦',
-      });
-    } else {
-      document.getElementById('greeting').textContent = text;
+    container.innerHTML = '<ul style="list-style:none;padding:0;margin-top:1rem;">' + posts.map(post => {
+      const tags = JSON.parse(post.tags || '[]');
+      const tagHtml = tags.map(tag =>
+        `<span style="display:inline-block;margin-right:0.4rem;padding:0.15rem 0.6rem;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:999px;font-size:0.8rem;font-weight:500;">${tag}</span>`
+      ).join('');
+
+      return `
+        <li style="margin-bottom:1.2rem;padding:1.5rem;background:rgba(255,255,255,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+          <a href="/posts/${post.slug}" style="text-decoration:none;color:inherit;display:block;">
+            <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#1d1d1f;font-weight:600;">${post.title}</h2>
+            <p style="color:#888;font-size:0.85rem;margin:0 0 0.6rem 0;">
+              📅 ${post.pub_date} · ✍️ ${post.author}
+            </p>
+            ${post.description ? `<p style="color:#444;margin:0 0 0.6rem 0;line-height:1.6;">${post.description}</p>` : ''}
+            ${tags.length > 0 ? `<div style="margin-top:0.3rem;">${tagHtml}</div>` : ''}
+          </a>
+        </li>
+      `;
+    }).join('') + '</ul>';
+  }
+
+  function filterPosts(keyword) {
+    const kw = keyword.trim().toLowerCase();
+    if (!kw) { renderPosts(allPosts); return; }
+    const filtered = allPosts.filter(p => {
+      const tags = JSON.parse(p.tags || '[]').join(' ');
+      return (p.title + ' ' + (p.description || '') + ' ' + tags).toLowerCase().includes(kw);
+    });
+    renderPosts(filtered);
+  }
+
+  async function loadBlogPosts() {
+    try {
+      const res = await fetch('/api/posts');
+      allPosts = await res.json();
+      renderPosts(allPosts);
+    } catch (e) {
+      document.getElementById('blog-list').innerHTML = '<p style="color:red;">加载失败，请刷新重试</p>';
     }
   }
 
-  document.getElementById('new-greeting').addEventListener('click', typeRandom);
-  typeRandom();
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    filterPosts(e.target.value);
+  });
+
+  loadBlogPosts();
 </script>
