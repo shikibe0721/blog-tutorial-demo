@@ -5,46 +5,105 @@ const pageTitle = "我的技术博客";
 
 <BaseLayout pageTitle={pageTitle}>
   <p style="color:#555;font-size:1.05rem;">记录我学习 Astro 和前端开发的点点滴滴。</p>
-  <p><a href="/admin" style="display:inline-block;padding:0.4rem 1rem;background:rgba(99,102,241,0.1);border-radius:999px;color:#6366f1;font-weight:500;text-decoration:none;">👉 进入管理后台</a></p>
+  <p><a href="/admin" class="admin-link">👉 进入管理后台</a></p>
+
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="🔍 搜索标题、描述或标签..." />
+  </div>
 
   <div id="blog-list"><p style="color:#888;">加载中...</p></div>
 </BaseLayout>
 
+<style>
+  .admin-link {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 999px;
+    color: #6366f1;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .search-box {
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 1rem;
+    color: #1d1d1f;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+</style>
+
 <script is:inline>
+  let allPosts = [];
+
+  function renderPosts(posts) {
+    const container = document.getElementById('blog-list');
+    if (posts.length === 0) {
+      container.innerHTML = '<p style="color:#888;">没有找到匹配的文章 🥲</p>';
+      return;
+    }
+    container.innerHTML = '<ul style="list-style:none;padding:0;margin-top:1rem;">' + posts.map(post => {
+      const tags = JSON.parse(post.tags || '[]');
+      const tagHtml = tags.map(tag =>
+        `<span style="display:inline-block;margin-right:0.4rem;padding:0.15rem 0.6rem;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:999px;font-size:0.8rem;font-weight:500;">${tag}</span>`
+      ).join('');
+
+      return `
+        <li style="margin-bottom:1.2rem;padding:1.5rem;background:rgba(255,255,255,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+          <a href="/posts/${post.slug}" style="text-decoration:none;color:inherit;display:block;">
+            <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#1d1d1f;font-weight:600;">${post.title}</h2>
+            <p style="color:#888;font-size:0.85rem;margin:0 0 0.6rem 0;">
+              📅 ${post.pub_date} · ✍️ ${post.author}
+            </p>
+            ${post.description ? `<p style="color:#444;margin:0 0 0.6rem 0;line-height:1.6;">${post.description}</p>` : ''}
+            ${tags.length > 0 ? `<div style="margin-top:0.3rem;">${tagHtml}</div>` : ''}
+          </a>
+        </li>
+      `;
+    }).join('') + '</ul>';
+  }
+
+  function filterPosts(keyword) {
+    const kw = keyword.trim().toLowerCase();
+    if (!kw) { renderPosts(allPosts); return; }
+    const filtered = allPosts.filter(p => {
+      const tags = JSON.parse(p.tags || '[]').join(' ');
+      return (p.title + ' ' + (p.description || '') + ' ' + tags).toLowerCase().includes(kw);
+    });
+    renderPosts(filtered);
+  }
+
   async function loadBlogPosts() {
     try {
       const res = await fetch('/api/posts');
-      const posts = await res.json();
-      const container = document.getElementById('blog-list');
-
-      if (posts.length === 0) {
-        container.innerHTML = '<p style="color:#888;">暂无文章，去 <a href="/admin">后台</a> 写一篇吧！</p>';
-        return;
-      }
-
-      container.innerHTML = '<ul style="list-style:none;padding:0;margin-top:1.5rem;">' + posts.map(post => {
-        const tags = JSON.parse(post.tags || '[]');
-        const tagHtml = tags.map(tag =>
-          `<span style="display:inline-block;margin-right:0.4rem;padding:0.15rem 0.6rem;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:999px;font-size:0.8rem;font-weight:500;">${tag}</span>`
-        ).join('');
-
-        return `
-          <li style="margin-bottom:1.2rem;padding:1.5rem;background:rgba(255,255,255,0.45);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.5);border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
-            <a href="/posts/${post.slug}" style="text-decoration:none;color:inherit;display:block;">
-              <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#1d1d1f;font-weight:600;">${post.title}</h2>
-              <p style="color:#888;font-size:0.85rem;margin:0 0 0.6rem 0;">
-                📅 ${post.pub_date} · ✍️ ${post.author}
-              </p>
-              ${post.description ? `<p style="color:#444;margin:0 0 0.6rem 0;line-height:1.6;">${post.description}</p>` : ''}
-              ${tags.length > 0 ? `<div style="margin-top:0.3rem;">${tagHtml}</div>` : ''}
-            </a>
-          </li>
-        `;
-      }).join('') + '</ul>';
+      allPosts = await res.json();
+      renderPosts(allPosts);
     } catch (e) {
       document.getElementById('blog-list').innerHTML = '<p style="color:red;">加载失败，请刷新重试</p>';
     }
   }
+
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    filterPosts(e.target.value);
+  });
 
   loadBlogPosts();
 </script>
