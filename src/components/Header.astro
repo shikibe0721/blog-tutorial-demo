@@ -6,51 +6,47 @@ const navLinks = [
 ];
 ---
 
-<header class="ios-header">
-  <nav class="ios-nav-bar" id="nav-bar">
-    <a href="/" class="logo">Mayu's Blog</a>
-    <button class="menu-btn" aria-expanded="false" aria-controls="mobile-nav">
-      <span aria-hidden="true">☰</span>
-    </button>
-    <ul id="mobile-nav" class="nav-links desktop-nav">
-      {navLinks.map((link) => (
-        <li><a href={link.url}>{link.name}</a></li>
-      ))}
-    </ul>
-  </nav>
+<header class="ios-header" id="nav-bar">
+  <a href="/" class="logo">Mayu's Blog</a>
+  <button class="menu-btn" aria-expanded="false" aria-controls="mobile-nav">
+    <span aria-hidden="true">☰</span>
+  </button>
+  <ul id="mobile-nav" class="desktop-nav">
+    {navLinks.map((link) => (
+      <li><a href={link.url}>{link.name}</a></li>
+    ))}
+  </ul>
 </header>
 
 <style>
+  /* === 液态玻璃导航栏：模糊直接加在 fixed 元素上 === */
   .ios-header {
     position: fixed;
     top: 12px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
+    -webkit-transform: translateX(-50%) translateZ(0);
     z-index: 1000;
     width: calc(100% - 24px);
     max-width: 780px;
-  }
-
-  /* === 液态玻璃导航栏：更强模糊 === */
-  .ios-nav-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(24px) saturate(180%);
+    background: rgba(255, 255, 255, 0.25);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    transition: background 0.3s ease;
   }
 
   /* 滚动后：磨砂加深 */
-  .ios-nav-bar.scrolled {
-    background: rgba(255, 255, 255, 0.32);
-    backdrop-filter: blur(32px) saturate(200%);
+  .ios-header.scrolled {
+    background: rgba(255, 255, 255, 0.38);
     -webkit-backdrop-filter: blur(32px) saturate(200%);
+    backdrop-filter: blur(32px) saturate(200%);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
@@ -107,9 +103,9 @@ const navLinks = [
       left: 0;
       right: 0;
       flex-direction: column;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(24px) saturate(180%);
+      background: rgba(255, 255, 255, 0.4);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 20px;
       padding: 0.5rem;
@@ -138,7 +134,7 @@ const navLinks = [
     });
   }
 
-  // 滚动时加深磨砂效果
+  // 滚动时加深磨砂
   window.addEventListener('scroll', () => {
     const bar = document.getElementById('nav-bar');
     if (window.scrollY > 10) {
