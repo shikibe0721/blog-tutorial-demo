@@ -216,9 +216,9 @@ export async function onRequestGet() {
     .nav-links { display: none; }
   }
 
-  /* === G3 连续圆角统一设置（已剔除导航栏系控件） === */
+  /* === G3 连续圆角统一设置 === */
   :root { --r: 12px; }
-  .nav-links a, .back-btn, .card, .like-btn, .react-btn, .comments-card, .comment-submit, .comment-form textarea, .tag, pre.code-block {
+  .back-btn, .card, .like-btn, .react-btn, .comments-card, .comment-submit, .comment-form textarea, .tag, pre.code-block {
     border-radius: var(--r) !important;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 12px rgba(255,255,255,0.1) !important;
     filter: drop-shadow(0 4px 14px rgba(0,0,0,0.08));
@@ -462,9 +462,9 @@ export async function onRequestGet() {
 </script>
 <script>
 (function () {
-  // 已经彻底剔除 .ios-header 等导航栏控件，保护 999px 胶囊圆角！
-  var SEL = '.nav-links a, .back-btn, .card, .like-btn, .react-btn, .comments-card, .comment-submit, .comment-form textarea, .tag, pre.code-block';
-  var N = 5, STEPS = 14; // N=5：曲率过渡更明显，squircle 感更强
+  // 彻底剔除导航栏控件，保护 999px 胶囊！
+  var SEL = '.back-btn, .card, .like-btn, .react-btn, .comments-card, .comment-submit, .comment-form textarea, .tag, pre.code-block';
+  var N = 5, STEPS = 14;
   function buildClip(el) {
     var w = el.offsetWidth, h = el.offsetHeight;
     if (!w || !h) return;
