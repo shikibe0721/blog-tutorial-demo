@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 export const prerender = true;
-const pageTitle = "博客管理员后台";
+const pageTitle = "博客管理后台";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -46,7 +46,8 @@ const pageTitle = "博客管理员后台";
 
         <div class="form-field">
           <label>描述</label>
-          <textarea id="f-desc" rows="2" placeholder="一句话简介"></textarea>
+          <textarea id="f-desc" rows="1" maxlength="127" placeholder="一句话简介（最多 127 字）"></textarea>
+          <div class="counter" id="desc-count">0/127</div>
         </div>
 
         <div class="form-field">
@@ -56,12 +57,27 @@ const pageTitle = "博客管理员后台";
 
         <div class="form-field">
           <label>发布日期</label>
-          <input type="date" id="f-date" />
+          <div class="date-wrap">
+            <input type="text" id="f-date" placeholder="YYYY-MM-DD" readonly />
+            <button type="button" class="date-btn" id="date-toggle">📅</button>
+            <div class="calendar" id="calendar" style="display:none;">
+              <div class="cal-head">
+                <button type="button" class="cal-nav" id="cal-prev">‹</button>
+                <span id="cal-title"></span>
+                <button type="button" class="cal-nav" id="cal-next">›</button>
+              </div>
+              <div class="cal-week">
+                <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+              </div>
+              <div class="cal-days" id="cal-days"></div>
+            </div>
+          </div>
         </div>
 
         <div class="form-field">
-          <label>正文（支持简单 Markdown）</label>
-          <textarea id="f-content" rows="12" placeholder="在这里写文章内容..."></textarea>
+          <label>正文（支持简单 Markdown，最多 1023 字）</label>
+          <textarea id="f-content" rows="5" maxlength="1023" placeholder="在这里写文章内容..."></textarea>
+          <div class="counter" id="content-count">0/1023</div>
         </div>
 
         <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
@@ -86,41 +102,12 @@ const pageTitle = "博客管理员后台";
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
-  .login-box {
-    text-align: center;
-    padding: 2rem 0;
-  }
-
-  .input-group {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-
-  .input-group input {
-    flex: 1;
-    max-width: 280px;
-  }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .form-field {
-    margin-bottom: 1rem;
-  }
-
-  .form-field label {
-    display: block;
-    font-size: 0.85rem;
-    color: #555;
-    margin-bottom: 0.3rem;
-    font-weight: 500;
-  }
+  .login-box { text-align: center; padding: 2rem 0; }
+  .input-group { display: flex; gap: 0.5rem; justify-content: center; }
+  .input-group input { flex: 1; max-width: 280px; }
+  .toolbar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .form-field { margin-bottom: 1rem; }
+  .form-field label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500; }
 
   input, textarea {
     width: 100%;
@@ -135,17 +122,65 @@ const pageTitle = "博客管理员后台";
     transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
   }
-
   input:focus, textarea:focus {
     border-color: rgba(99, 102, 241, 0.5);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
-
   textarea {
     font-family: "SF Mono", "Fira Code", monospace;
     resize: vertical;
+    overflow-y: auto;
+    line-height: 1.6;
   }
 
+  .counter { text-align: right; font-size: 0.75rem; color: #999; margin-top: 0.2rem; }
+
+  /* === 自定义玻璃日历 === */
+  .date-wrap { position: relative; display: flex; gap: 0.5rem; }
+  .date-wrap input { flex: 1; }
+  .date-btn {
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .date-btn:hover { background: rgba(99, 102, 241, 0.2); }
+
+  .calendar {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 50;
+    width: 280px;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+  .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-weight: 600; color: #1d1d1f; }
+  .cal-nav { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.2rem 0.6rem; border-radius: 8px; color: #6366f1; }
+  .cal-nav:hover { background: rgba(99, 102, 241, 0.1); }
+  .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.75rem; color: #888; margin-bottom: 0.3rem; }
+  .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-day { background: none; border: none; cursor: pointer; padding: 0.35rem 0; border-radius: 8px; font-size: 0.85rem; color: #333; transition: background 0.15s; }
+  .cal-day:hover { background: rgba(99, 102, 241, 0.12); }
+  .cal-day.today { border: 1px solid rgba(99, 102, 241, 0.4); }
+  .cal-day.selected { background: #6366f1; color: #fff; }
+  .cal-empty { visibility: hidden; }
+
+  html.dark .calendar { background: rgba(30, 30, 52, 0.92); border-color: rgba(255, 255, 255, 0.15); }
+  html.dark .cal-head { color: #f2f2fa; }
+  html.dark .cal-day { color: #d0d0e0; }
+  html.dark .cal-week { color: #8888a0; }
+  html.dark .counter { color: #8888a0; }
+
+  /* iOS 风格按钮 */
   .ios-btn {
     display: inline-block;
     padding: 0.5rem 1.2rem;
@@ -208,37 +243,19 @@ const pageTitle = "博客管理员后台";
     align-items: center;
     transition: background 0.2s;
   }
-  :global(.post-item:hover) {
-    background: rgba(255, 255, 255, 0.5);
-  }
-  :global(.post-item-info) {
-    flex: 1;
-  }
-  :global(.post-item-title) {
-    font-weight: 600;
-    color: #1d1d1f;
-    font-size: 1rem;
-  }
-  :global(.post-item-date) {
-    color: #888;
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
-  }
-  :global(.post-item-actions) {
-    display: flex;
-    gap: 0.3rem;
-  }
-  :global(.post-item-actions button) {
-    padding: 0.3rem 0.8rem !important;
-    font-size: 0.8rem !important;
-  }
+  :global(.post-item:hover) { background: rgba(255, 255, 255, 0.5); }
+  :global(.post-item-info) { flex: 1; }
+  :global(.post-item-title) { font-weight: 600; color: #1d1d1f; font-size: 1rem; }
+  :global(.post-item-date) { color: #888; font-size: 0.8rem; margin-top: 0.2rem; }
+  :global(.post-item-actions) { display: flex; gap: 0.3rem; }
+  :global(.post-item-actions button) { padding: 0.3rem 0.8rem !important; font-size: 0.8rem !important; }
 </style>
 
 <script is:inline>
-  // === 服务端限流，前端只负责显示 ===
+  // === 登录（服务端限流） ===
   function login() {
     const pw = document.getElementById('password').value;
-    if (!pw) { showError('请输入密码喵~'); return; }
+    if (!pw) { showError('请输入密码'); return; }
 
     fetch('/api/auth', {
       method: 'POST',
@@ -250,9 +267,9 @@ const pageTitle = "博客管理员后台";
         document.getElementById('editor-panel').style.display = 'block';
         loadPosts();
       } else {
-        showError(data.error || '密码错误喵QAQ');
+        showError(data.error || '密码错误');
       }
-    }).catch(() => showError('网络错误，请重试(加个proxy或者VPN吧喵~)'));
+    }).catch(() => showError('网络错误，请重试'));
   }
 
   function showError(msg) {
@@ -272,12 +289,79 @@ const pageTitle = "博客管理员后台";
     if (e.key === 'Enter') login();
   });
 
+  // === 文本框自动长高 + 字数统计 ===
+  const descEl = document.getElementById('f-desc');
+  const contentEl = document.getElementById('f-content');
+
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight + 2, 420) + 'px';
+  }
+
+  function refreshCounters() {
+    document.getElementById('desc-count').textContent = descEl.value.length + '/127';
+    document.getElementById('content-count').textContent = contentEl.value.length + '/1023';
+  }
+
+  descEl.addEventListener('input', () => { autoGrow(descEl); refreshCounters(); });
+  contentEl.addEventListener('input', () => { autoGrow(contentEl); refreshCounters(); });
+
+  // === 自定义玻璃日历 ===
+  const calEl = document.getElementById('calendar');
+  let calYear, calMonth;
+
+  function fmtDate(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function renderCalendar() {
+    document.getElementById('cal-title').textContent = calYear + ' 年 ' + (calMonth + 1) + ' 月';
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const selected = document.getElementById('f-date').value;
+    const todayStr = fmtDate(new Date());
+
+    let html = '';
+    for (let i = 0; i < firstDay; i++) html += '<span class="cal-empty"></span>';
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      const cls = ['cal-day'];
+      if (dateStr === selected) cls.push('selected');
+      if (dateStr === todayStr) cls.push('today');
+      html += '<button type="button" class="' + cls.join(' ') + '" data-date="' + dateStr + '">' + d + '</button>';
+    }
+    const daysEl = document.getElementById('cal-days');
+    daysEl.innerHTML = html;
+    daysEl.querySelectorAll('.cal-day').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('f-date').value = btn.dataset.date;
+        calEl.style.display = 'none';
+      });
+    });
+  }
+
+  document.getElementById('date-toggle').addEventListener('click', () => {
+    if (calEl.style.display === 'none') {
+      const val = document.getElementById('f-date').value;
+      const base = val ? new Date(val + 'T00:00:00') : new Date();
+      calYear = base.getFullYear();
+      calMonth = base.getMonth();
+      renderCalendar();
+      calEl.style.display = 'block';
+    } else {
+      calEl.style.display = 'none';
+    }
+  });
+  document.getElementById('cal-prev').addEventListener('click', () => { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCalendar(); });
+  document.getElementById('cal-next').addEventListener('click', () => { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCalendar(); });
+
+  // === 文章列表 ===
   async function loadPosts() {
     const res = await fetch('/api/posts');
     const posts = await res.json();
     const list = document.getElementById('post-list');
     if (posts.length === 0) {
-      list.innerHTML = '<p style="color:#888;text-align:center;padding:2rem 0;">暂无文章，点击"新文章"开始写作喵！</p>';
+      list.innerHTML = '<p style="color:#888;text-align:center;padding:2rem 0;">暂无文章，点击"新文章"开始写作吧！</p>';
       return;
     }
     list.innerHTML = posts.map(p => {
@@ -291,10 +375,11 @@ const pageTitle = "博客管理员后台";
     document.getElementById('edit-id').value = '';
     document.getElementById('f-title').value = '';
     document.getElementById('f-slug').value = '';
-    document.getElementById('f-desc').value = '';
+    descEl.value = '';
     document.getElementById('f-tags').value = '';
-    document.getElementById('f-date').value = new Date().toISOString().slice(0, 10);
-    document.getElementById('f-content').value = '';
+    document.getElementById('f-date').value = fmtDate(new Date());
+    contentEl.value = '';
+    autoGrow(descEl); autoGrow(contentEl); refreshCounters();
     document.getElementById('post-form').style.display = 'block';
   }
 
@@ -303,10 +388,11 @@ const pageTitle = "博客管理员后台";
     document.getElementById('edit-id').value = post.id;
     document.getElementById('f-title').value = post.title;
     document.getElementById('f-slug').value = post.slug;
-    document.getElementById('f-desc').value = post.description || '';
+    descEl.value = post.description || '';
     document.getElementById('f-tags').value = JSON.parse(post.tags || '[]').join(', ');
     document.getElementById('f-date').value = post.pub_date ? post.pub_date.slice(0, 10) : '';
-    document.getElementById('f-content').value = post.content || '';
+    contentEl.value = post.content || '';
+    autoGrow(descEl); autoGrow(contentEl); refreshCounters();
     document.getElementById('post-form').style.display = 'block';
   }
 
@@ -319,10 +405,10 @@ const pageTitle = "博客管理员后台";
     const data = {
       title: document.getElementById('f-title').value,
       slug: document.getElementById('f-slug').value,
-      description: document.getElementById('f-desc').value,
+      description: descEl.value,
       tags: document.getElementById('f-tags').value.split(',').map(t => t.trim()).filter(Boolean),
       pub_date: document.getElementById('f-date').value,
-      content: document.getElementById('f-content').value,
+      content: contentEl.value,
     };
 
     if (!data.title || !data.slug) { alert('标题和Slug不能为空'); return; }
@@ -346,7 +432,7 @@ const pageTitle = "博客管理员后台";
   }
 
   async function deletePost(id) {
-    if (!confirm('确定要删除这篇文章吗？此操作不可撤销喵!!!!!')) return;
+    if (!confirm('确定要删除这篇文章吗？此操作不可撤销。')) return;
     await fetch('/api/posts/' + id, { method: 'DELETE' });
     loadPosts();
   }
