@@ -29,7 +29,6 @@ const navLinks = [
     top: 12px;
     left: 50%;
     transform: translateX(-50%) translateZ(0);
-    -webkit-transform: translateX(-50%) translateZ(0);
     z-index: 1000;
     width: calc(100% - 24px);
     max-width: 780px;
@@ -39,246 +38,102 @@ const navLinks = [
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.22);
-    -webkit-backdrop-filter: blur(4px) saturate(180%);
     backdrop-filter: blur(4px) saturate(180%);
+    -webkit-backdrop-filter: blur(4px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 14px rgba(255, 255, 255, 0.22);
-    transition: background 0.3s ease;
     animation: glass-settle 1.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
-
   @keyframes glass-settle {
-    0% {
-      transform: translateX(-50%) translateZ(0) scale(1);
-      -webkit-backdrop-filter: blur(0px) saturate(180%);
-      backdrop-filter: blur(0px) saturate(180%);
-    }
-    50% {
-      transform: translateX(-50%) translateZ(0) scale(1.02);
-      -webkit-backdrop-filter: blur(2px) saturate(180%);
-      backdrop-filter: blur(2px) saturate(180%);
-    }
-    100% {
-      transform: translateX(-50%) translateZ(0) scale(1);
-      -webkit-backdrop-filter: blur(4px) saturate(180%);
-      backdrop-filter: blur(4px) saturate(180%);
-    }
+    0% { transform: translateX(-50%) scale(1); backdrop-filter: blur(0px) saturate(180%); -webkit-backdrop-filter: blur(0px) saturate(180%); }
+    50% { transform: translateX(-50%) scale(1.02); backdrop-filter: blur(2px) saturate(180%); -webkit-backdrop-filter: blur(2px) saturate(180%); }
+    100% { transform: translateX(-50%) scale(1); backdrop-filter: blur(4px) saturate(180%); -webkit-backdrop-filter: blur(4px) saturate(180%); }
   }
-
   .ios-header::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 999px;
-    pointer-events: none;
+    content: ''; position: absolute; inset: 0; border-radius: 999px; pointer-events: none;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.06) 45%, rgba(255, 255, 255, 0) 65%);
   }
-
   .ios-header.scrolled {
     background: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 0 14px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.55);
   }
-
-  html.dark .ios-header {
-    background: rgba(25, 25, 45, 0.5);
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 0 14px rgba(255, 255, 255, 0.06);
-  }
+  html.dark .ios-header { background: rgba(25, 25, 45, 0.5); border-color: rgba(255, 255, 255, 0.12); }
   html.dark .ios-header.scrolled { background: rgba(25, 25, 45, 0.65); }
-  html.dark .ios-header::after {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0) 65%);
-  }
+  html.dark .ios-header::after { background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02) 45%, rgba(255, 255, 255, 0) 65%); }
   html.dark .logo, html.dark .desktop-nav a { color: #e8e8f0; }
   html.dark .menu-btn { color: #e8e8f0; }
   html.dark .theme-btn { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); }
 
-  .right-side {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  .logo {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: #1d1d1f;
-    text-decoration: none;
-    letter-spacing: -0.02em;
-    position: relative;
-    z-index: 1;
-  }
-
+  .right-side { display: flex; align-items: center; gap: 0.25rem; position: relative; z-index: 1; }
+  .logo { font-weight: 700; font-size: 1.1rem; color: #1d1d1f; text-decoration: none; letter-spacing: -0.02em; position: relative; z-index: 1; }
   .theme-btn {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 999px;
-    padding: 0.3rem 0.6rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.25); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px;
+    padding: 0.3rem 0.6rem; font-size: 1rem; cursor: pointer; transition: all 0.2s ease;
   }
   .theme-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.05); }
 
-  /* === 导航 + 滑动高亮小球 === */
-  .desktop-nav {
-    position: relative;
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 0.25rem;
-  }
-
+  .desktop-nav { position: relative; display: flex; list-style: none; margin: 0; padding: 0; gap: 0.25rem; }
   :global(.nav-indicator) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.4);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.2);
-    pointer-events: none;
-    z-index: 0;
-    transition:
-      transform 0.35s cubic-bezier(0.3, 1.4, 0.6, 1),
-      width 0.35s cubic-bezier(0.3, 1.4, 0.6, 1);
+    position: absolute; top: 0; left: 0; height: 100%; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.4); pointer-events: none; z-index: 0;
+    transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.6, 1), width 0.35s cubic-bezier(0.3, 1.4, 0.6, 1);
   }
-  :global(html.dark .nav-indicator) {
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 0 8px rgba(255, 255, 255, 0.06);
-  }
-
-  /* duang：幅度调小，更精致 */
-  :global(.nav-indicator.duang) {
-    animation: duang 0.35s cubic-bezier(0.3, 1.4, 0.6, 1);
-  }
+  :global(html.dark .nav-indicator) { background: rgba(255, 255, 255, 0.12); }
+  :global(.nav-indicator.duang) { animation: duang 0.35s cubic-bezier(0.3, 1.4, 0.6, 1); }
   @keyframes duang {
-    0% { scale: 1 1; }
-    35% { scale: 1.06 0.92; }
-    70% { scale: 0.97 1.04; }
-    100% { scale: 1 1; }
+    0% { scale: 1 1; } 35% { scale: 1.06 0.92; } 70% { scale: 0.97 1.04; } 100% { scale: 1 1; }
   }
 
   .desktop-nav a {
-    position: relative;
-    z-index: 1;
-    display: block;
-    padding: 0.4rem 0.9rem;
-    border-radius: 999px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #1d1d1f;
-    transition: color 0.2s ease;
+    position: relative; z-index: 1; display: block; padding: 0.4rem 0.9rem;
+    border-radius: 999px; text-decoration: none; font-size: 0.9rem; font-weight: 500; color: #1d1d1f;
+    background: transparent; /* 桌面端默认透明 */
   }
 
-  .menu-btn {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    cursor: pointer;
-    padding: 0.3rem;
-    color: #1d1d1f;
+  /* 彻底干掉桌面端的 hover 背景，只留小球 */
+  @media screen and (min-width: 637px) {
+    .desktop-nav a:hover { background: transparent !important; }
   }
 
+  .menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; padding: 0.3rem; color: #1d1d1f; }
   :global(.user-area) { display: flex; align-items: center; gap: 0.2rem; }
   :global(.user-chip) {
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #1d1d1f;
-    max-width: 12ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.12);
+    padding: 0.3rem 0.8rem; border-radius: 999px; background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.35); font-size: 0.85rem; font-weight: 500; color: #1d1d1f;
+    max-width: 12ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  :global(.user-logout) {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.2rem 0.45rem;
-    border-radius: 999px;
-    color: #888;
-    transition: all 0.2s;
-  }
+  :global(.user-logout) { background: none; border: none; cursor: pointer; font-size: 0.9rem; padding: 0.2rem 0.45rem; border-radius: 999px; color: #888; }
   :global(.user-logout:hover) { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
   :global(.user-login) {
-    padding: 0.3rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(99, 102, 241, 0.12);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    color: #6366f1;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.12);
+    padding: 0.3rem 0.9rem; border-radius: 999px; background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.2); color: #6366f1; font-size: 0.85rem; font-weight: 500; text-decoration: none;
   }
   :global(.user-login:hover) { background: rgba(99, 102, 241, 0.2); }
 
-  :global(html.dark .user-chip) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #e8e8f0;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
-  }
-  :global(html.dark .user-login) {
-    background: rgba(165, 166, 255, 0.12);
-    border-color: rgba(165, 166, 255, 0.25);
-    color: #a5a6ff;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
-  }
+  :global(html.dark .user-chip) { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: #e8e8f0; }
+  :global(html.dark .user-login) { background: rgba(165, 166, 255, 0.12); border-color: rgba(165, 166, 255, 0.25); color: #a5a6ff; }
   :global(html.dark .user-logout) { color: #8888a0; }
 
   @media screen and (max-width: 636px) {
     .menu-btn { display: block; }
-
     :global(.nav-indicator) { display: none; }
-
     .desktop-nav {
-      display: none;
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      right: 0;
-      flex-direction: column;
-      background: rgba(255, 255, 255, 0.4);
-      -webkit-backdrop-filter: blur(4px) saturate(180%);
-      backdrop-filter: blur(4px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 20px;
-      padding: 0.5rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; flex-direction: column;
+      background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 20px; padding: 0.5rem;
     }
-
-    .desktop-nav a {
-      padding: 0.7rem 1rem;
-      border-radius: 14px;
-    }
-    .desktop-nav a:hover { background: rgba(255, 255, 255, 0.35); }
-    html.dark .desktop-nav a:hover { background: rgba(255, 255, 255, 0.1); }
-
-    :global(.menu-btn[aria-expanded="true"]) ~ .desktop-nav {
-      display: flex;
-    }
+    .desktop-nav a { padding: 0.7rem 1rem; border-radius: 14px; }
+    /* 手机端保留 hover 高亮 */
+    .desktop-nav a:hover { background: rgba(255, 255, 255, 0.35) !important; }
+    html.dark .desktop-nav a:hover { background: rgba(255, 255, 255, 0.1) !important; }
+    :global(.menu-btn[aria-expanded="true"]) ~ .desktop-nav { display: flex; }
   }
 </style>
 
 <script is:inline>
-  // === 滑动高亮小球 ===
   (function () {
     const navUl = document.querySelector('.desktop-nav');
     if (!navUl) return;
-
     const indicator = document.createElement('span');
     indicator.className = 'nav-indicator';
     navUl.prepend(indicator);
@@ -288,32 +143,18 @@ const navLinks = [
       const path = window.location.pathname;
       let found = null;
       links.forEach(a => { if (a.getAttribute('href') === path) found = a; });
-      if (!found) {
-        links.forEach(a => {
-          const href = a.getAttribute('href');
-          if (href !== '/' && path.indexOf(href) === 0) found = a;
-        });
-      }
+      if (!found) links.forEach(a => { if (a.getAttribute('href') !== '/' && path.indexOf(a.getAttribute('href')) === 0) found = a; });
       return found || links[0];
     }
-
     const active = activeLink();
 
     function move(link, instant) {
       if (instant) indicator.style.transition = 'none';
       indicator.style.width = link.offsetWidth + 'px';
       indicator.style.transform = 'translateX(' + link.offsetLeft + 'px)';
-      if (instant) {
-        void indicator.offsetWidth;
-        indicator.style.transition = '';
-      }
+      if (instant) { void indicator.offsetWidth; indicator.style.transition = ''; }
     }
-
-    function duang() {
-      indicator.classList.remove('duang');
-      void indicator.offsetWidth;
-      indicator.classList.add('duang');
-    }
+    function duang() { indicator.classList.remove('duang'); void indicator.offsetWidth; indicator.classList.add('duang'); }
 
     requestAnimationFrame(() => move(active, true));
     window.addEventListener('load', () => move(active, true));
@@ -324,16 +165,10 @@ const navLinks = [
       a.addEventListener('mousedown', () => duang());
     });
     navUl.addEventListener('mouseleave', () => move(active));
-
-    indicator.addEventListener('transitionend', (e) => {
-      if (e.propertyName === 'transform') duang();
-    });
+    indicator.addEventListener('transitionend', (e) => { if (e.propertyName === 'transform') duang(); });
   })();
 
-  // === 用户区域 ===
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function renderUserArea() {
     const area = document.getElementById('user-area');
     const user = localStorage.getItem('mayu_user');
@@ -341,14 +176,8 @@ const navLinks = [
     if (user && token) {
       area.innerHTML = '<span class="user-chip" title="' + esc(user) + '">👤 ' + esc(user) + '</span><button type="button" class="user-logout" id="nav-logout" title="退出登录">⎋</button>';
       document.getElementById('nav-logout').addEventListener('click', async () => {
-        await fetch('/api/logout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        }).catch(() => {});
-        localStorage.removeItem('mayu_token');
-        localStorage.removeItem('mayu_user');
-        renderUserArea();
+        await fetch('/api/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) }).catch(() => {});
+        localStorage.removeItem('mayu_token'); localStorage.removeItem('mayu_user'); renderUserArea();
       });
     } else {
       area.innerHTML = '<a href="/user" class="user-login">登录</a>';
@@ -356,21 +185,15 @@ const navLinks = [
   }
   renderUserArea();
 
-  // === 主题切换 ===
   const themeBtn = document.getElementById('theme-toggle');
-  function updateThemeIcon() {
-    const isDark = document.documentElement.classList.contains('dark');
-    themeBtn.textContent = isDark ? '☀️' : '🌙';
-  }
+  function updateThemeIcon() { themeBtn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; }
   themeBtn.addEventListener('click', () => {
     document.documentElement.classList.toggle('dark');
-    const isDark = document.documentElement.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     updateThemeIcon();
   });
   updateThemeIcon();
 
-  // === 汉堡菜单 ===
   const btn = document.querySelector('.menu-btn');
   const nav = document.getElementById('mobile-nav');
   if (btn && nav) {
@@ -380,7 +203,6 @@ const navLinks = [
     });
   }
 
-  // === 滚动加深磨砂 ===
   window.addEventListener('scroll', () => {
     const bar = document.getElementById('nav-bar');
     if (window.scrollY > 10) bar.classList.add('scrolled');
