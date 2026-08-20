@@ -1,90 +1,291 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+export const prerender = true;
 const pageTitle = "博客管理后台";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <div class="admin-container">
-    <h1>📝 博客管理后台</h1>
+  <div class="admin-container" data-liquid-glass>
+    <h1 style="margin:0 0 1.5rem;font-size:1.8rem;color:#1d1d1f;">📝 博客管理后台</h1>
 
     <!-- 登录面板 -->
     <div id="login-panel">
-      <input type="password" id="password" placeholder="输入管理密码" />
-      <button onclick="login()">登录</button>
+      <div class="login-box">
+        <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">请输入管理密码以继续</p>
+        <div class="input-group">
+          <input type="password" id="password" placeholder="输入管理密码" autocomplete="off" />
+          <button onclick="login()" class="ios-btn">登录</button>
+        </div>
+        <p id="login-error" style="color:#ef4444;font-size:0.85rem;margin-top:0.5rem;display:none;"></p>
+      </div>
     </div>
 
     <!-- 编辑面板（默认隐藏） -->
     <div id="editor-panel" style="display:none;">
       <div class="toolbar">
-        <button onclick="loadPosts()">🔄 刷新列表</button>
-        <button onclick="showNewForm()">➕ 新文章</button>
+        <button onclick="loadPosts()" class="ios-btn-secondary">🔄 刷新列表</button>
+        <button onclick="showNewForm()" class="ios-btn">➕ 新文章</button>
+        <button onclick="logout()" class="ios-btn-danger" style="margin-left:auto;">退出</button>
       </div>
 
       <div id="post-list"></div>
 
-      <div id="post-form" style="display:none; margin-top:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px;">
-        <h3 id="form-title">新建文章</h3>
+      <div id="post-form" style="display:none; margin-top:1rem; padding:1.5rem; background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.4);border-radius:16px;">
+        <h3 id="form-title" style="margin:0 0 1rem;color:#1d1d1f;">新建文章</h3>
         <input type="hidden" id="edit-id" />
 
-        <label>标题</label><br/>
-        <input type="text" id="f-title" style="width:100%;margin-bottom:0.5rem;" /><br/>
+        <div class="form-field">
+          <label>标题</label>
+          <input type="text" id="f-title" placeholder="文章标题" />
+        </div>
 
-        <label>Slug（URL路径）</label><br/>
-        <input type="text" id="f-slug" style="width:100%;margin-bottom:0.5rem;" /><br/>
+        <div class="form-field">
+          <label>Slug（URL路径，英文短横线分隔）</label>
+          <input type="text" id="f-slug" placeholder="my-first-post" />
+        </div>
 
-        <label>描述</label><br/>
-        <textarea id="f-desc" style="width:100%;margin-bottom:0.5rem;"></textarea><br/>
+        <div class="form-field">
+          <label>描述</label>
+          <textarea id="f-desc" rows="2" placeholder="一句话简介"></textarea>
+        </div>
 
-        <label>标签（逗号分隔）</label><br/>
-        <input type="text" id="f-tags" style="width:100%;margin-bottom:0.5rem;" /><br/>
+        <div class="form-field">
+          <label>标签（逗号分隔）</label>
+          <input type="text" id="f-tags" placeholder="astro, 学习, 前端" />
+        </div>
 
-        <label>发布日期</label><br/>
-        <input type="date" id="f-date" style="width:100%;margin-bottom:0.5rem;" /><br/>
+        <div class="form-field">
+          <label>发布日期</label>
+          <input type="date" id="f-date" />
+        </div>
 
-        <label>正文（Markdown）</label><br/>
-        <textarea id="f-content" rows="15" style="width:100%;margin-bottom:0.5rem;font-family:monospace;"></textarea><br/>
+        <div class="form-field">
+          <label>正文（支持简单 Markdown）</label>
+          <textarea id="f-content" rows="12" placeholder="在这里写文章内容..."></textarea>
+        </div>
 
-        <button onclick="savePost()">💾 保存</button>
-        <button onclick="hideForm()">取消</button>
+        <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+          <button onclick="savePost()" class="ios-btn">💾 保存</button>
+          <button onclick="hideForm()" class="ios-btn-secondary">取消</button>
+        </div>
       </div>
     </div>
   </div>
 </BaseLayout>
 
+<style>
+  .admin-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .login-box {
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .input-group input {
+    flex: 1;
+    max-width: 280px;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .form-field {
+    margin-bottom: 1rem;
+  }
+
+  .form-field label {
+    display: block;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    font-size: 0.95rem;
+    color: #1d1d1f;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  input:focus, textarea:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  textarea {
+    font-family: "SF Mono", "Fira Code", monospace;
+    resize: vertical;
+  }
+
+  /* iOS 风格按钮 */
+  .ios-btn {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background: rgba(99, 102, 241, 0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 999px;
+    color: #6366f1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .ios-btn:hover { background: rgba(99, 102, 241, 0.2); transform: scale(1.03); }
+  .ios-btn:active { transform: scale(0.97); }
+
+  .ios-btn-secondary {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    color: #555;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .ios-btn-secondary:hover { background: rgba(0, 0, 0, 0.1); }
+
+  .ios-btn-danger {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background: rgba(239, 68, 68, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 999px;
+    color: #ef4444;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .ios-btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+
+  /* 文章列表项 */
+  .post-item {
+    padding: 1rem;
+    margin-bottom: 0.6rem;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+  }
+  .post-item:hover { background: rgba(255, 255, 255, 0.5); }
+  .post-item-info { flex: 1; }
+  .post-item-title { font-weight: 600; color: #1d1d1f; font-size: 1rem; }
+  .post-item-date { color: #888; font-size: 0.8rem; margin-top: 0.2rem; }
+  .post-item-actions { display: flex; gap: 0.3rem; }
+  .post-item-actions button { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+</style>
+
 <script is:inline>
-  async function login() {
+  // === 安全增强：防暴力破解 ===
+  let failCount = 0;
+  let lockUntil = 0;
+
+  function login() {
+    const now = Date.now();
+    if (now < lockUntil) {
+      const remain = Math.ceil((lockUntil - now) / 1000);
+      showError('操作太频繁，请 ' + remain + ' 秒后再试');
+      return;
+    }
+
     const pw = document.getElementById('password').value;
-    const res = await fetch('/api/auth', {
+    if (!pw) { showError('请输入密码'); return; }
+
+    fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: pw })
-    });
-    if (res.ok) {
-      document.getElementById('login-panel').style.display = 'none';
-      document.getElementById('editor-panel').style.display = 'block';
-      loadPosts();
-    } else {
-      alert('密码错误');
-    }
+    }).then(res => {
+      if (res.ok) {
+        failCount = 0;
+        document.getElementById('login-panel').style.display = 'none';
+        document.getElementById('editor-panel').style.display = 'block';
+        loadPosts();
+      } else {
+        failCount++;
+        if (failCount >= 5) {
+          lockUntil = Date.now() + 30000;
+          failCount = 0;
+          showError('错误次数过多，已锁定 30 秒');
+        } else {
+          showError('密码错误（还剩 ' + (5 - failCount) + ' 次机会）');
+        }
+      }
+    }).catch(() => showError('网络错误，请重试'));
   }
+
+  function showError(msg) {
+    const el = document.getElementById('login-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+
+  function logout() {
+    document.getElementById('editor-panel').style.display = 'none';
+    document.getElementById('login-panel').style.display = 'block';
+    document.getElementById('password').value = '';
+  }
+
+  // 回车键登录
+  document.getElementById('password').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') login();
+  });
 
   async function loadPosts() {
     const res = await fetch('/api/posts');
     const posts = await res.json();
     const list = document.getElementById('post-list');
     if (posts.length === 0) {
-      list.innerHTML = '<p style="color:#888;">暂无文章，点击"新文章"开始写作吧！</p>';
+      list.innerHTML = '<p style="color:#888;text-align:center;padding:2rem 0;">暂无文章，点击"新文章"开始写作吧！</p>';
       return;
     }
-    list.innerHTML = posts.map(p => `
-      <div style="padding:0.5rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
-        <span><strong>${p.title}</strong> <small style="color:#888;">(${p.pub_date})</small></span>
-        <span>
-          <button onclick='editPost(${JSON.stringify(p).replace(/'/g, "&#39;")})'>编辑</button>
-          <button onclick="deletePost(${p.id})" style="color:red;">删除</button>
-        </span>
-      </div>
-    `).join('');
+    list.innerHTML = posts.map(p => {
+      const safePost = JSON.stringify(p).replace(/'/g, "&#39;").replace(/"/g, '&quot;');
+      return '<div class="post-item"><div class="post-item-info"><div class="post-item-title">' + p.title + '</div><div class="post-item-date">📅 ' + p.pub_date + '</div></div><div class="post-item-actions"><button onclick=\'editPost(' + safePost + ')\' class="ios-btn-secondary">编辑</button><button onclick="deletePost(' + p.id + ')" class="ios-btn-danger">删除</button></div></div>';
+    }).join('');
   }
 
   function showNewForm() {
@@ -126,12 +327,9 @@ const pageTitle = "博客管理后台";
       content: document.getElementById('f-content').value,
     };
 
-    if (!data.title || !data.slug) {
-      alert('标题和Slug不能为空');
-      return;
-    }
+    if (!data.title || !data.slug) { alert('标题和Slug不能为空'); return; }
 
-    const url = id ? `/api/posts/${id}` : '/api/posts';
+    const url = id ? '/api/posts/' + id : '/api/posts';
     const method = id ? 'PUT' : 'POST';
 
     const res = await fetch(url, {
@@ -150,16 +348,8 @@ const pageTitle = "博客管理后台";
   }
 
   async function deletePost(id) {
-    if (!confirm('确定要删除这篇文章吗？')) return;
-    await fetch(`/api/posts/${id}`, { method: 'DELETE' });
+    if (!confirm('确定要删除这篇文章吗？此操作不可撤销。')) return;
+    await fetch('/api/posts/' + id, { method: 'DELETE' });
     loadPosts();
   }
 </script>
-
-<style>
-  .admin-container { max-width: 800px; margin: 2rem auto; padding: 1rem; }
-  .toolbar { margin-bottom: 1rem; }
-  input, textarea { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-  button { padding: 0.4rem 1rem; cursor: pointer; margin: 0.25rem; border-radius: 4px; border: 1px solid #ccc; background: #fff; }
-  button:hover { background: #f0f0f0; }
-</style>
