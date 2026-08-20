@@ -6,16 +6,14 @@ const navLinks = [
 ];
 ---
 
-<header class="ios-header" id="nav-bar">
-  <a href="/" class="logo">Mayu's Blog</a>
   <div class="right-side">
-    <div class="user-area" id="user-area"></div>
     <button type="button" class="theme-btn" id="theme-toggle" title="切换深浅模式">🌙</button>
     <ul id="mobile-nav" class="desktop-nav">
       {navLinks.map((link) => (
         <li><a href={link.url}>{link.name}</a></li>
       ))}
     </ul>
+    <div class="user-area" id="user-area"></div>
     <button type="button" class="menu-btn" aria-expanded="false" aria-controls="mobile-nav">
       <span aria-hidden="true">☰</span>
     </button>
