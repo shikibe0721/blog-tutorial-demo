@@ -187,3 +187,39 @@ html.dark #greeting {
 .post-item-actions button:hover {
   transform: scale(1.05);
 }
+/* ========== 深色模式：登录/注册页 ========== */
+html.dark .user-card {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+html.dark .tab {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #b8b8cc;
+}
+
+html.dark .tab.active {
+  background: rgba(165, 166, 255, 0.15);
+  border-color: rgba(165, 166, 255, 0.3);
+  color: #a5a6ff;
+}
+
+html.dark .form-field label {
+  color: #b8b8cc;
+}
+
+html.dark .user-card input::placeholder {
+  color: #8888a0;
+}
+
+html.dark .user-card .ios-btn-secondary {
+  color: #c8c8d8;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html.dark #logged-text {
+  color: #e8e8f0 !important;
+}
