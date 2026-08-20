@@ -4,7 +4,7 @@ const pageTitle = "我的博客首页";
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <div class="home-card" data-liquid-glass>
+  <div class="home-card" data-liquid-glass data-aos="fade" data-tilt>
     <h2 style="margin:0 0 1rem;font-size:1.8rem;color:#1d1d1f;">欢迎来到我的博客 👋</h2>
     <p id="greeting" style="font-size:1.15rem;color:#444;margin:1rem 0;min-height:2em;"></p>
     <button id="new-greeting" class="ios-btn">换一句问候</button>
@@ -49,26 +49,43 @@ const pageTitle = "我的博客首页";
   }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
 <script is:inline>
   const greetings = [
     "今天也是元气满满的一天！✨",
     "慢慢来，比较快 🐢",
     "代码写不出来就先摸会儿鱼 🐟",
+    "Ciallo～(∠・ω< )⌒☆",
     "每一个 Bug 都是成长的机会 💪",
     "今天的你比昨天更厉害了一点 📈",
     "喝杯水，休息一下再继续 ☕",
+    "Ciallo～(∠・ω< )⌒☆",
     "保持好奇，保持热爱 🔥",
     "你已经很棒了，别忘了夸夸自己 🌟",
     "前端的路很长，但风景很好 🏞️",
     "Ciallo～(∠・ω< )⌒☆",
   ];
 
-  function showRandomGreeting() {
-    const el = document.getElementById('greeting');
-    const random = greetings[Math.floor(Math.random() * greetings.length)];
-    el.textContent = random;
+  let typedInstance = null;
+
+  function typeRandom() {
+    const text = greetings[Math.floor(Math.random() * greetings.length)];
+    if (typedInstance) {
+      typedInstance.destroy();
+      typedInstance = null;
+    }
+    if (window.Typed) {
+      typedInstance = new Typed('#greeting', {
+        strings: [text],
+        typeSpeed: 45,
+        showCursor: true,
+        cursorChar: '✦',
+      });
+    } else {
+      document.getElementById('greeting').textContent = text;
+    }
   }
 
-  document.getElementById('new-greeting').addEventListener('click', showRandomGreeting);
-  showRandomGreeting();
+  document.getElementById('new-greeting').addEventListener('click', typeRandom);
+  typeRandom();
 </script>
