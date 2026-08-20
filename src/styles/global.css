@@ -362,3 +362,34 @@ html.dark .date-btn {
 [data-aos="fade-up"].aos-animate {
   transform: translate3d(0, 0, 0) !important;
 }
+/* ========== 日历：半透磨砂 + 动态日期格全局样式 ========== */
+.calendar {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+html.dark .calendar {
+  background: rgba(25, 25, 45, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 日期格（JS 动态生成，必须全局） */
+.cal-day {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem 0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #333;
+  transition: background 0.15s;
+}
+.cal-day:hover { background: rgba(99, 102, 241, 0.12); }
+.cal-day.today { border: 1px solid rgba(99, 102, 241, 0.4); }
+.cal-day.selected { background: #6366f1; color: #fff; }
+.cal-empty { visibility: hidden; }
+
+html.dark .cal-day { color: #d0d0e0; }
+html.dark .cal-day:hover { background: rgba(165, 166, 255, 0.15); }
+html.dark .cal-day.today { border-color: rgba(165, 166, 255, 0.5); }
+html.dark .cal-day.selected { background: #6366f1; color: #fff; }
