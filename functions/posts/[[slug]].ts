@@ -165,17 +165,13 @@ export async function onRequestGet() {
   .comment-submit {
     padding: 0.45rem 1.2rem; border-radius: 999px;
     background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2);
-    color: #6366f1; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
-  }
-  .comment-submit:hover { background: rgba(99,102,241,0.2); }
-  html.dark .comment-submit { background: rgba(165,166,255,0.12); border-color: rgba(165,166,255,0.25); color: #a5a6ff; }
-  .login-hint { margin-top: 1rem; font-size: 0.9rem; color: #888; }
-  /* === 按钮变形确认动画 === */
-  .comment-submit {
+    color: #6366f1; font-size: 0.9rem; font-weight: 500; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; white-space: nowrap;
     transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s, color 0.3s, border-color 0.3s;
   }
+  .comment-submit:hover { background: rgba(99,102,241,0.2); }
+  html.dark .comment-submit { background: rgba(165,166,255,0.12); border-color: rgba(165,166,255,0.25); color: #a5a6ff; }
   .comment-submit.morphed {
     background: rgba(17, 17, 20, 0.9);
     border-color: rgba(17, 17, 20, 0.9);
@@ -191,6 +187,8 @@ export async function onRequestGet() {
     border: 1px solid currentColor; align-items: center; justify-content: center;
     margin-right: 0.4rem; font-size: 0.7rem; flex-shrink: 0;
   }
+  .login-hint { margin-top: 1rem; font-size: 0.9rem; color: #888; }
+
   @media screen and (max-width: 636px) {
     .nav-links { display: none; }
   }
@@ -258,7 +256,6 @@ export async function onRequestGet() {
   }
   renderUserArea();
 
-  // === 点赞 + 评论 ===
   function getToken() { return localStorage.getItem('mayu_token'); }
   function authHeaders() {
     var h = { 'Content-Type': 'application/json' };
@@ -271,6 +268,30 @@ export async function onRequestGet() {
       var d = new Date(s + 'Z');
       return (d.getMonth() + 1) + '-' + d.getDate() + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
     } catch (e) { return s; }
+  }
+
+  function morphConfirm(btn, msg) {
+    if (btn.dataset.morphing) return;
+    btn.dataset.morphing = '1';
+    var oldW = btn.offsetWidth;
+    var oldHTML = btn.innerHTML;
+    btn.style.width = oldW + 'px';
+    btn.classList.add('morphed');
+    btn.innerHTML = '<span class="m-check">✓</span>' + msg;
+    btn.style.width = 'auto';
+    var newW = btn.offsetWidth;
+    btn.style.width = oldW + 'px';
+    void btn.offsetWidth;
+    btn.style.width = newW + 'px';
+    setTimeout(function () {
+      btn.style.width = oldW + 'px';
+      setTimeout(function () {
+        btn.classList.remove('morphed');
+        btn.innerHTML = oldHTML;
+        btn.style.width = '';
+        delete btn.dataset.morphing;
+      }, 460);
+    }, 1600);
   }
 
   async function loadLike(slug) {
@@ -322,13 +343,13 @@ export async function onRequestGet() {
       if (r.ok) {
         input.value = '';
         loadComments(slug);
+        morphConfirm(document.getElementById('comment-submit'), '已评论');
       } else {
         alert(data.error || '评论失败');
       }
     });
   }
 
-  // === 加载文章 ===
   async function loadPost() {
     var pathParts = window.location.pathname.split('/').filter(Boolean);
     var slug = pathParts[pathParts.length - 1];
