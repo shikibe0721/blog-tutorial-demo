@@ -27,7 +27,7 @@ const { pageTitle } = Astro.props;
         if (dark) document.documentElement.classList.add('dark');
       })();
     </script>
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
     <script is:inline defer src="https://cdn.jsdelivr.net/npm/liquid-gl@latest/dist/liquidGL.min.js"></script>
   </head>
   <body>
@@ -39,8 +39,8 @@ const { pageTitle } = Astro.props;
       import "../scripts/menu.js";
     </script>
     <script src="../scripts/g3.js"></script>
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
     <script is:inline>
       if (window.Lenis) {
         const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
