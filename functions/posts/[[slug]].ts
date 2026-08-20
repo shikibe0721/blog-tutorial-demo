@@ -1,14 +1,61 @@
-export async function onRequestGet(context: any) {
-  const url = new URL(context.request.url);
-  const postUrl = url.origin + '/posts/index.html';
+export async function onRequestGet() {
+  const html = `<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>文章详情</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #e0f0ff 0%, #f0e6ff 50%, #ffe6f0 100%); min-height: 100vh; margin: 0; padding: 5rem 1rem 2rem; color: #1d1d1f; }
+    .container { max-width: 700px; margin: 0 auto; }
+    a { color: #6366f1; text-decoration: none; }
+    .back-btn { display: inline-block; padding: 0.4rem 1rem; background: rgba(99,102,241,0.1); border-radius: 999px; color: #6366f1; font-weight: 500; margin-top: 2rem; }
+    .card { padding: 2rem; background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.5); border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .tag { display: inline-block; margin-right: 0.4rem; padding: 0.15rem 0.6rem; background: rgba(99,102,241,0.1); color: #6366f1; border-radius: 999px; font-size: 0.8rem; font-weight: 500; }
+    .post-content { line-height: 1.8; color: #333; }
+    .post-content h1, .post-content h2, .post-content h3 { color: #1d1d1f; margin: 1.5rem 0 0.5rem; }
+    .post-content p { margin: 0.8rem 0; }
+    .post-content li { margin-left: 1.5rem; margin-bottom: 0.3rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="post-detail"><p style="color:#888;">加载中...</p></div>
+    <a href="/blog" class="back-btn">← 返回博客列表</a>
+  </div>
+  <script>
+    async function loadPost() {
+      var pathParts = window.location.pathname.split('/').filter(Boolean);
+      var slug = pathParts[pathParts.length - 1];
+      try {
+        var res = await fetch('/api/posts');
+        var posts = await res.json();
+        var post = posts.find(function(p) { return p.slug === slug; });
+        var container = document.getElementById('post-detail');
+        if (!post) { container.innerHTML = '<p style="color:#888;">文章不存在</p>'; return; }
+        var tags = JSON.parse(post.tags || '[]');
+        var tagHtml = tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
+        var content = post.content || '';
+        content = content
+          .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+          .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+          .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+          .replace(/\\*\\*(.+?)\\*\\*/g, '<strong>$1</strong>')
+          .replace(/^- (.+)$/gm, '<li>$1</li>')
+          .replace(/\\n\\n/g, '</p><p>')
+          .replace(/\\n/g, '<br/>');
+        content = '<p>' + content + '</p>';
+        container.innerHTML = '<article class="card"><h1 style="margin:0 0 0.5rem;font-size:1.8rem;font-weight:700;">' + post.title + '</h1><p style="color:#888;font-size:0.9rem;margin:0 0 1rem;">📅 ' + post.pub_date + ' · ✍️ ' + post.author + '</p>' + (tags.length > 0 ? '<div style="margin-bottom:1.5rem;">' + tagHtml + '</div>' : '') + '<hr style="border:none;border-top:1px solid rgba(0,0,0,0.08);margin:1.5rem 0;" /><div class="post-content">' + content + '</div></article>';
+      } catch (e) {
+        document.getElementById('post-detail').innerHTML = '<p style="color:red;">加载失败</p>';
+      }
+    }
+    loadPost();
+  </script>
+</body>
+</html>`;
 
-  try {
-    const res = await fetch(postUrl);
-    const html = await res.text();
-    return new Response(html, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' },
-    });
-  } catch {
-    return new Response('文章加载失败', { status: 500 });
-  }
+  return new Response(html, {
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
 }
