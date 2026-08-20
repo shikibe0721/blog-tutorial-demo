@@ -19,7 +19,6 @@ const navLinks = [
 </header>
 
 <style>
-  /* === 液态玻璃导航栏：模糊直接加在 fixed 元素上 === */
   .ios-header {
     position: fixed;
     top: 12px;
@@ -35,18 +34,17 @@ const navLinks = [
     padding: 0.6rem 1.2rem;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.25);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    backdrop-filter: blur(8px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.35);
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     transition: background 0.3s ease;
   }
 
-  /* 滚动后：磨砂加深 */
   .ios-header.scrolled {
     background: rgba(255, 255, 255, 0.38);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(9px) saturate(200%);
+    backdrop-filter: blur(9px) saturate(200%);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
@@ -104,8 +102,8 @@ const navLinks = [
       right: 0;
       flex-direction: column;
       background: rgba(255, 255, 255, 0.4);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(10px) saturate(180%);
+      backdrop-filter: blur(10px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 20px;
       padding: 0.5rem;
@@ -124,7 +122,6 @@ const navLinks = [
 </style>
 
 <script is:inline>
-  // 汉堡菜单开关
   const btn = document.querySelector('.menu-btn');
   const nav = document.getElementById('mobile-nav');
   if (btn && nav) {
@@ -134,7 +131,6 @@ const navLinks = [
     });
   }
 
-  // 滚动时加深磨砂
   window.addEventListener('scroll', () => {
     const bar = document.getElementById('nav-bar');
     if (window.scrollY > 10) {
