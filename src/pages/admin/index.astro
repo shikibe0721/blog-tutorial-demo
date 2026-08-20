@@ -6,17 +6,17 @@ const pageTitle = "博客管理后台";
 
 <BaseLayout pageTitle={pageTitle}>
   <div class="admin-container" data-liquid-glass>
-    <h1 style="margin:0 0 1.5rem;font-size:1.8rem;color:#1d1d1f;">📝 博客管理后台</h1>
+    <h1 style="margin:0 0 1.5rem;font-size:1.8rem;">📝 博客管理后台</h1>
 
     <!-- 登录面板 -->
     <div id="login-panel">
       <div class="login-box">
-        <p style="color:#666;margin-bottom:1rem;font-size:0.95rem;">请输入管理密码以继续</p>
+        <p class="login-hint">请输入管理密码以继续</p>
         <div class="input-group">
           <input type="password" id="password" placeholder="输入管理密码" autocomplete="off" />
           <button onclick="login()" class="ios-btn">登录</button>
         </div>
-        <p id="login-error" style="color:#ef4444;font-size:0.85rem;margin-top:0.5rem;display:none;"></p>
+        <p id="login-error" class="login-error"></p>
       </div>
     </div>
 
@@ -30,8 +30,8 @@ const pageTitle = "博客管理后台";
 
       <div id="post-list"></div>
 
-      <div id="post-form" style="display:none; margin-top:1rem; padding:1.5rem; background:rgba(255,255,255,0.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.4);border-radius:16px;">
-        <h3 id="form-title" style="margin:0 0 1rem;color:#1d1d1f;">新建文章</h3>
+      <div id="post-form" class="post-form-hidden">
+        <h3 id="form-title" class="form-title">新建文章</h3>
         <input type="hidden" id="edit-id" />
 
         <div class="form-field">
@@ -102,10 +102,27 @@ const pageTitle = "博客管理后台";
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
 
+  h1 { color: #1d1d1f; }
+
   .login-box { text-align: center; padding: 2rem 0; }
+  .login-hint { color: #666; margin-bottom: 1rem; font-size: 0.95rem; }
+  .login-error { color: #ef4444; font-size: 0.85rem; margin-top: 0.5rem; display: none; min-height: 1.2em; }
   .input-group { display: flex; gap: 0.5rem; justify-content: center; }
   .input-group input { flex: 1; max-width: 280px; }
   .toolbar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  
+  .post-form-hidden {
+    display: none;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 16px;
+  }
+  .form-title { margin: 0 0 1rem; color: #1d1d1f; }
+
   .form-field { margin-bottom: 1rem; }
   .form-field label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.3rem; font-weight: 500; }
 
@@ -173,12 +190,6 @@ const pageTitle = "博客管理后台";
   .cal-day.today { border: 1px solid rgba(99, 102, 241, 0.4); }
   .cal-day.selected { background: #6366f1; color: #fff; }
   .cal-empty { visibility: hidden; }
-
-  html.dark .calendar { background: rgba(30, 30, 52, 0.92); border-color: rgba(255, 255, 255, 0.15); }
-  html.dark .cal-head { color: #f2f2fa; }
-  html.dark .cal-day { color: #d0d0e0; }
-  html.dark .cal-week { color: #8888a0; }
-  html.dark .counter { color: #8888a0; }
 
   /* iOS 风格按钮 */
   .ios-btn {
@@ -249,10 +260,53 @@ const pageTitle = "博客管理后台";
   :global(.post-item-date) { color: #888; font-size: 0.8rem; margin-top: 0.2rem; }
   :global(.post-item-actions) { display: flex; gap: 0.3rem; }
   :global(.post-item-actions button) { padding: 0.3rem 0.8rem !important; font-size: 0.8rem !important; }
+
+  /* ========== 深色模式完美适配 ========== */
+  html.dark .admin-container {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  html.dark h1 { color: #f2f2fa; }
+  html.dark .login-hint { color: #b8b8cc; }
+  
+  html.dark .post-form-hidden {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  html.dark .form-title { color: #f2f2fa; }
+  html.dark .form-field label { color: #b8b8cc; }
+  
+  html.dark .admin-container input,
+  html.dark .admin-container textarea {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e8e8f0;
+  }
+  html.dark .admin-container input::placeholder,
+  html.dark .admin-container textarea::placeholder { color: #8888a0; }
+  html.dark .counter { color: #8888a0; }
+  
+  html.dark .calendar { background: rgba(30, 30, 52, 0.92); border-color: rgba(255, 255, 255, 0.15); }
+  html.dark .cal-head { color: #f2f2fa; }
+  html.dark .cal-day { color: #d0d0e0; }
+  html.dark .cal-week { color: #8888a0; }
+  
+  html.dark .date-btn {
+    background: rgba(165, 166, 255, 0.12);
+    border-color: rgba(165, 166, 255, 0.25);
+  }
+
+  html.dark :global(.post-item) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  html.dark :global(.post-item-title) { color: #f2f2fa; }
+  html.dark :global(.post-item-date) { color: #8888a0; }
 </style>
 
 <script is:inline>
-  // === 登录（服务端限流） ===
+  // === 登录 ===
   function login() {
     const pw = document.getElementById('password').value;
     if (!pw) { showError('请输入密码'); return; }
@@ -294,6 +348,7 @@ const pageTitle = "博客管理后台";
   const contentEl = document.getElementById('f-content');
 
   function autoGrow(el) {
+    if (!el.offsetParent) return; // 隐藏时不算高度
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight + 2, 420) + 'px';
   }
@@ -370,6 +425,7 @@ const pageTitle = "博客管理后台";
     }).join('');
   }
 
+  // === 表单操作（修好了：先显示，再算高度） ===
   function showNewForm() {
     document.getElementById('form-title').textContent = '新建文章';
     document.getElementById('edit-id').value = '';
@@ -379,8 +435,13 @@ const pageTitle = "博客管理后台";
     document.getElementById('f-tags').value = '';
     document.getElementById('f-date').value = fmtDate(new Date());
     contentEl.value = '';
-    autoGrow(descEl); autoGrow(contentEl); refreshCounters();
+    
+    // 关键：先显示面板，此时 offsetParent 才不是 null
     document.getElementById('post-form').style.display = 'block';
+    // 然后再算高度，此时就会正常恢复 rows 或者内容高度
+    autoGrow(descEl); 
+    autoGrow(contentEl); 
+    refreshCounters();
   }
 
   function editPost(post) {
@@ -392,8 +453,11 @@ const pageTitle = "博客管理后台";
     document.getElementById('f-tags').value = JSON.parse(post.tags || '[]').join(', ');
     document.getElementById('f-date').value = post.pub_date ? post.pub_date.slice(0, 10) : '';
     contentEl.value = post.content || '';
-    autoGrow(descEl); autoGrow(contentEl); refreshCounters();
+    
     document.getElementById('post-form').style.display = 'block';
+    autoGrow(descEl); 
+    autoGrow(contentEl); 
+    refreshCounters();
   }
 
   function hideForm() {
