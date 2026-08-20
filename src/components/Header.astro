@@ -1,22 +1,135 @@
 ---
-import Menu from "./Menu.astro";
-import Navigation from "./Navigation.astro";
-import ThemeIcon from "./ThemeIcon.astro";
+const navLinks = [
+  { name: "首页", url: "/" },
+  { name: "博客", url: "/blog" },
+  { name: "关于", url: "/about" },
+];
 ---
 
-<header>
-  <nav>
-    <div>
-      <ThemeIcon />
-      <Menu />
-    </div>
-    <Navigation />
+<header class="ios-header">
+  <nav class="ios-nav-bar">
+    <a href="/" class="logo">Mayu's Blog</a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="mobile-nav">
+      <span aria-hidden="true">☰</span>
+    </button>
+    <ul id="mobile-nav" class="nav-links desktop-nav">
+      {navLinks.map((link) => (
+        <li><a href={link.url}>{link.name}</a></li>
+      ))}
+    </ul>
   </nav>
 </header>
 
 <style>
-  div {
+  /* === iOS 26 悬浮胶囊导航栏 === */
+  .ios-header {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: calc(100% - 24px);
+    max-width: 780px;
+  }
+
+  .ios-nav-bar {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow:
+      0 2px 16px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1d1d1f;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  /* === 桌面端导航链接 === */
+  .desktop-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+  }
+
+  .desktop-nav a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1d1d1f;
+    transition: background 0.2s ease;
+  }
+
+  .desktop-nav a:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  /* === 移动端汉堡按钮 === */
+  .menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0.3rem;
+    color: #1d1d1f;
+  }
+
+  /* === 移动端下拉菜单 === */
+  @media screen and (max-width: 636px) {
+    .menu-btn {
+      display: block;
+    }
+
+    .desktop-nav {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 20px;
+      padding: 0.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .desktop-nav a {
+      padding: 0.7rem 1rem;
+      border-radius: 14px;
+    }
+
+    :global(.menu-btn[aria-expanded="true"]) ~ .desktop-nav {
+      display: flex;
+    }
   }
 </style>
+
+<script is:inline>
+  const btn = document.querySelector('.menu-btn');
+  const nav = document.getElementById('mobile-nav');
+  if (btn && nav) {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
+</script>
