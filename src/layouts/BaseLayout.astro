@@ -12,12 +12,20 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <!-- 🌙 主题：手动优先，没手动选过就 19:00-07:00 自动暗 -->
     <script is:inline>
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark');
-      }
+      (function () {
+        var saved = localStorage.getItem('theme');
+        var dark;
+        if (saved) {
+          dark = saved === 'dark';
+        } else {
+          var h = new Date().getHours();
+          dark = (h >= 19 || h < 7);
+        }
+        if (dark) document.documentElement.classList.add('dark');
+      })();
     </script>
-    <!-- AOS 滚动动画 -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/liquid-gl@latest/dist/liquidGL.min.js"></script>
   </head>
@@ -29,12 +37,10 @@ const { pageTitle } = Astro.props;
     <script>
       import "../scripts/menu.js";
     </script>
-    <!-- AOS + Vanilla-tilt + Lenis -->
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script is:inline>
-      // === Lenis 丝滑滚动 ===
       if (window.Lenis) {
         const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
         function raf(time) {
@@ -44,15 +50,12 @@ const { pageTitle } = Astro.props;
         requestAnimationFrame(raf);
       }
 
-      // === AOS 滚动浮现 ===
       if (window.AOS) {
         AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
       } else {
-        // CDN 加载失败时移除属性，防止元素隐藏
         document.querySelectorAll('[data-aos]').forEach(el => el.removeAttribute('data-aos'));
       }
 
-      // === Vanilla-tilt 卡片 3D 倾斜 ===
       if (window.VanillaTilt) {
         document.querySelectorAll('[data-tilt]').forEach(el => {
           VanillaTilt.init(el, { max: 6, speed: 400, glare: true, 'max-glare': 0.12, scale: 1.01 });
