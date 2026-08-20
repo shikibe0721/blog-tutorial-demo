@@ -38,7 +38,6 @@ const { pageTitle } = Astro.props;
       import "../scripts/menu.js";
     </script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
     <script is:inline>
       if (window.Lenis) {
@@ -50,16 +49,11 @@ const { pageTitle } = Astro.props;
         requestAnimationFrame(raf);
       }
 
+      // 收敛版入场：慢一点、轻一点
       if (window.AOS) {
-        AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+        AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 40 });
       } else {
         document.querySelectorAll('[data-aos]').forEach(el => el.removeAttribute('data-aos'));
-      }
-
-      if (window.VanillaTilt) {
-        document.querySelectorAll('[data-tilt]').forEach(el => {
-          VanillaTilt.init(el, { max: 6, speed: 400, glare: true, 'max-glare': 0.12, scale: 1.01 });
-        });
       }
     </script>
     <script is:inline>
