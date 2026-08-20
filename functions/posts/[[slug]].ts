@@ -215,6 +215,17 @@ export async function onRequestGet() {
   @media screen and (max-width: 636px) {
     .nav-links { display: none; }
   }
+    :root { --r: 12px; }
+  .ios-header, .nav-links a, .theme-btn, .user-chip, .user-login, .back-btn, .card,
+  .like-btn, .react-btn, .comments-card, .comment-submit, .comment-form textarea, .tag, pre.code-block {
+    border-radius: var(--r) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 0 12px rgba(255,255,255,0.1) !important;
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.08));
+  }
+  html.dark .ios-header, html.dark .card, html.dark .comments-card {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), inset 0 0 12px rgba(255,255,255,0.05) !important;
+    filter: drop-shadow(0 4px 18px rgba(0,0,0,0.4));
+  }
 </style>
 </head>
 <body>
