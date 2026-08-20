@@ -1,16 +1,36 @@
----
-import Social from "./Social.astro";
----
+<footer class="site-footer">
+  <p>本个人博客于 2026.08.19 在 Cloudflare 构建 · 使用 Astro</p>
+  <p class="footer-hidden">我说我想成为人类有没有懂的</p>
+</footer>
 
 <style>
-  footer {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+  .site-footer {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .site-footer p {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.25);
+    margin: 0.3rem 0;
+    transition: color 0.5s ease;
+  }
+
+  .site-footer p:hover {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .footer-hidden {
+    font-size: 0.7rem !important;
+    color: rgba(0, 0, 0, 0.08) !important;
+    cursor: default;
+    user-select: none;
+    transition: color 0.8s ease;
+  }
+
+  .footer-hidden:hover {
+    color: rgba(0, 0, 0, 0.35) !important;
   }
 </style>
-
-<footer>
-  <p>本个人博客在20260819于cloudflare构建,使用了astro</p>
-  <p>我说我想成为人类有没有懂的</p>
-</footer>
