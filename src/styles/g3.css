@@ -29,6 +29,7 @@ html.dark .gb-editor, html.dark .gb-send, html.dark .gb-login-hint {
 .desktop-nav, .cal-day {
   border-radius: var(--r) !important;
 }
+
 /* ========== 归档：删框 + 0.1s 明度呼吸 ========== */
 .tl-item {
   background: transparent !important;
@@ -38,6 +39,29 @@ html.dark .gb-editor, html.dark .gb-send, html.dark .gb-login-hint {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   clip-path: none !important;
+  opacity: 0.55;
+  transition: opacity 0.1s ease;
+}
+.tl-item:hover { opacity: 1 !important; }
+
+/* ========== 归档：连伪元素一起灭 ========== */
+.tl-item,
+.tl-item::before,
+.tl-item::after {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  clip-path: none !important;
+}
+.tl-item::before,
+.tl-item::after {
+  display: none !important;
+  content: none !important;
+}
+.tl-item {
   opacity: 0.55;
   transition: opacity 0.1s ease;
 }
