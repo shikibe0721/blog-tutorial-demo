@@ -668,3 +668,106 @@ html.dark .tl-item:hover {
 .tl-item:focus {
   text-decoration: none !important;
 }
+
+/* ========== 美观包 v1 ========== */
+
+/* 1. 选中色 */
+::selection { background: rgba(99, 102, 241, 0.3); }
+html.dark ::selection { background: rgba(165, 166, 255, 0.35); }
+
+/* 2. 滚动条 */
+* { scrollbar-width: thin; scrollbar-color: rgba(99, 102, 241, 0.35) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.35);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+html.dark { scrollbar-color: rgba(165, 166, 255, 0.3) transparent; }
+html.dark ::-webkit-scrollbar-thumb { background: rgba(165, 166, 255, 0.3); }
+
+/* 3. 标题流动渐变 */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1, .logo {
+    background-image: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 8s linear infinite;
+  }
+  html.dark h1, html.dark .logo {
+    background-image: linear-gradient(90deg, #a5a6ff, #d8a6ff, #ffb3d9, #a5a6ff);
+  }
+}
+@keyframes gradient-flow {
+  from { background-position: 0% 50%; }
+  to { background-position: 300% 50%; }
+}
+
+/* 4. 卡片悬停浮起 */
+.home-card, .about-big, .about-small, .post-item, .user-card, .comments-card {
+  transition: transform 0.2s ease;
+}
+.home-card:hover, .about-big:hover, .about-small:hover,
+.post-item:hover, .user-card:hover, .comments-card:hover {
+  transform: translateY(-3px);
+}
+
+/* 5. 按钮按压手感 */
+.ios-btn:active, .ios-btn-secondary:active, .ios-btn-danger:active,
+.theme-btn:active, .like-btn:active, .react-btn:active,
+.comment-submit:active, .gb-send:active, .tag-chip:active {
+  transform: scale(0.96) !important;
+}
+
+/* 6. 文章链接下划线滑入 */
+.post-content a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.25s ease;
+}
+.post-content a:hover {
+  background-size: 100% 1.5px;
+  text-decoration: none !important;
+}
+
+/* 7. 极光环境光（手机卡就删这段） */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(30% 30% at 20% 30%, rgba(99, 102, 241, 0.16), transparent 60%),
+    radial-gradient(25% 25% at 80% 20%, rgba(236, 72, 153, 0.12), transparent 60%),
+    radial-gradient(30% 30% at 60% 80%, rgba(168, 85, 247, 0.14), transparent 60%);
+  filter: blur(30px);
+  animation: aurora 18s ease-in-out infinite alternate;
+}
+@keyframes aurora {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(3%, -3%, 0) rotate(5deg); }
+}
+
+/* 8. 回顶玻璃钮 */
+#back-top {
+  position: fixed; right: 1.2rem; bottom: 1.2rem; z-index: 999;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  font-size: 1.1rem; color: #555; cursor: pointer;
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#back-top.show { opacity: 1; transform: none; pointer-events: auto; }
+#back-top:hover { transform: translateY(-2px); }
+html.dark #back-top { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.15); color: #c8c8d8; }
