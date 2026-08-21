@@ -56,5 +56,27 @@ const { pageTitle } = Astro.props;
         }
       });
     </script>
+  <script is:inline>
+    (function () {
+      function fixHeader() {
+        var el = document.getElementById('nav-bar');
+        if (!el) return;
+        el.style.setProperty('backdrop-filter', 'blur(4px) saturate(180%)', 'important');
+        el.style.setProperty('-webkit-backdrop-filter', 'blur(4px) saturate(180%)', 'important');
+        setTimeout(function () {
+          var cs = getComputedStyle(el);
+          var v = cs.backdropFilter || cs.webkitBackdropFilter;
+          if (!v || v === 'none') {
+            el.style.setProperty('background',
+              document.documentElement.classList.contains('dark') ? 'rgba(18,18,32,0.92)' : 'rgba(255,255,255,0.92)',
+              'important');
+          }
+        }, 600);
+      }
+      fixHeader();
+      document.addEventListener('DOMContentLoaded', fixHeader);
+      window.addEventListener('load', fixHeader);
+    })();
+  </script>
   </body>
 </html>
