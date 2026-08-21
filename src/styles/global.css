@@ -660,3 +660,11 @@ html.dark .tl-item:hover {
   translate: none !important;
   transition: opacity 0.1s ease !important;
 }
+
+/* ========== 归档：悬停只许加明度，不许下划线 ========== */
+.tl-item,
+.tl-item:hover,
+.tl-item:active,
+.tl-item:focus {
+  text-decoration: none !important;
+}
