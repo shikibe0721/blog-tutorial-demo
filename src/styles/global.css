@@ -1,22 +1,45 @@
-html {
-  background: linear-gradient(135deg, #e0f0ff 0%, #f0e6ff 50%, #ffe6f0 100%);
-  background-attachment: fixed;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  min-height: 100vh;
+:root {
+  --r: 14px;
+  --pill: 999px;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* ========== 背景与基础 ========== */
+html {
+  min-height: 100vh;
+  color-scheme: light;
+  background-color: #e0f0ff;
+  background-image: linear-gradient(135deg, #e0f0ff 0%, #f0e6ff 50%, #ffe6f0 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html.dark {
+  color-scheme: dark;
+  background-color: #0d1022;
+  background-image: linear-gradient(135deg, #0d1022 0%, #1a1035 50%, #200d2e 100%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 body {
   margin: 0 auto;
   width: 100%;
   max-width: 80ch;
+  min-height: 100vh;
   padding: 1rem;
   padding-top: 6rem;
   line-height: 1.7;
   color: #1d1d1f;
+  background: transparent;
 }
 
 h1 {
@@ -24,6 +47,11 @@ h1 {
   font-size: 2.2rem;
   color: #1d1d1f;
   letter-spacing: -0.02em;
+}
+
+h2,
+h3 {
+  color: #1d1d1f;
 }
 
 a {
@@ -35,134 +63,344 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ========== 🌙 深色模式 ========== */
-html.dark {
-  background: linear-gradient(135deg, #0d1022 0%, #1a1035 50%, #200d2e 100%);
-  background-attachment: fixed;
+/* ========== 基础圆角 ========== */
+.home-card,
+.about-card,
+.about-big,
+.about-small,
+.admin-container,
+#post-form,
+.calendar,
+.user-card,
+.comments-card,
+.post-item,
+.ios-btn,
+.ios-btn-secondary,
+.ios-btn-danger,
+.tab,
+.date-btn,
+.like-btn,
+.react-btn,
+.comment-submit,
+.sort-btn,
+.admin-link,
+.back-btn,
+input,
+textarea,
+.gb-editor,
+.gb-send,
+.gb-login-hint {
+  border-radius: var(--r) !important;
 }
 
-html.dark body { color: #e8e8f0; }
-html.dark h1, html.dark h2, html.dark h3 { color: #f2f2fa !important; }
-html.dark a { color: #a5a6ff; }
+.desktop-nav {
+  border-radius: var(--r) !important;
+}
 
-/* 导航栏 */
+.tag-chip,
+.post-item-actions button {
+  border-radius: var(--pill) !important;
+}
+
+.cal-day {
+  border-radius: 8px !important;
+}
+
+/* ========== 浅色模式：液态玻璃高光 ========== */
+.ios-btn,
+.ios-btn-secondary,
+.ios-btn-danger,
+.theme-btn,
+.tab,
+.date-btn,
+.user-login,
+.user-chip,
+.admin-link,
+.cal-nav,
+.like-btn,
+.react-btn,
+.comment-submit,
+.sort-btn,
+.back-btn,
+.gb-send {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 10px rgba(255, 255, 255, 0.12);
+}
+
+input,
+textarea {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+input:focus,
+textarea:focus {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 0 8px rgba(255, 255, 255, 0.1),
+    0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+.about-card,
+.home-card,
+.admin-container,
+.user-card,
+.calendar,
+.comments-card,
+#post-form,
+.about-big,
+.about-small,
+.post-item,
+.gb-editor {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 16px rgba(255, 255, 255, 0.15) !important;
+}
+
+.ios-header {
+  backdrop-filter: blur(4px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(180%) !important;
+}
+
+/* ========== 🌙 深色模式：基础文字 ========== */
+html.dark body {
+  color: #e8e8f0;
+}
+
+html.dark h1,
+html.dark h2,
+html.dark h3 {
+  color: #f2f2fa !important;
+}
+
+html.dark a {
+  color: #a5a6ff;
+}
+
+html.dark p {
+  color: #c2c2d4 !important;
+}
+
+html.dark #greeting {
+  color: #d6d6e6 !important;
+}
+
+/* ========== 🌙 深色模式：导航栏 ========== */
 html.dark .ios-header {
   background: rgba(25, 25, 45, 0.55) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
 }
+
 html.dark .ios-header.scrolled {
   background: rgba(25, 25, 45, 0.7) !important;
 }
-html.dark .logo, html.dark .desktop-nav a { color: #e8e8f0 !important; }
-html.dark .desktop-nav a:hover { background: rgba(255, 255, 255, 0.1) !important; }
-html.dark .menu-btn { color: #e8e8f0; }
+
+html.dark .logo,
+html.dark .desktop-nav a {
+  color: #e8e8f0 !important;
+}
+
+html.dark .desktop-nav a:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .menu-btn {
+  color: #e8e8f0;
+}
+
 html.dark .theme-btn {
   background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* 玻璃卡片 */
+/* ========== 🌙 深色模式：卡片与容器 ========== */
 html.dark .about-card,
 html.dark .home-card,
-html.dark .admin-container {
+html.dark .about-big,
+html.dark .about-small,
+html.dark .admin-container,
+html.dark #post-form,
+html.dark .user-card,
+html.dark .comments-card,
+html.dark .post-item,
+html.dark .gb-editor {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
   color: #e8e8f0 !important;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 14px rgba(255, 255, 255, 0.03) !important;
 }
 
-html.dark .subtitle { color: #a8a8bc !important; }
+html.dark .subtitle {
+  color: #a8a8bc !important;
+}
+
 html.dark .skill {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #c9c9ff !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
+
 html.dark .handle {
   background: rgba(255, 255, 255, 0.1) !important;
   color: #d0d0e0 !important;
 }
 
-/* 博客列表 */
+/* ========== 🌙 深色模式：博客列表 ========== */
 html.dark #blog-list li {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
 }
-html.dark #blog-list p { color: #b8b8cc !important; }
+
+html.dark #blog-list p {
+  color: #b8b8cc !important;
+}
+
 html.dark #blog-list span {
   background: rgba(165, 166, 255, 0.15) !important;
   color: #a5a6ff !important;
 }
 
-/* 搜索框 */
+/* ========== 🌙 深色模式：搜索框 ========== */
 html.dark .search-box input {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #e8e8f0 !important;
 }
-html.dark .search-box input::placeholder { color: #8888a0; }
 
-/* 按钮 */
-html.dark .ios-btn, html.dark .admin-link {
+html.dark .search-box input::placeholder {
+  color: #8888a0;
+}
+
+/* ========== 🌙 深色模式：按钮 ========== */
+html.dark .ios-btn,
+html.dark .admin-link {
   color: #a5a6ff !important;
   background: rgba(165, 166, 255, 0.12) !important;
   border-color: rgba(165, 166, 255, 0.25) !important;
 }
+
 html.dark .ios-btn-secondary {
   color: #c8c8d8 !important;
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
+
 html.dark .ios-btn-danger {
   color: #f87171 !important;
   background: rgba(248, 113, 113, 0.12) !important;
   border-color: rgba(248, 113, 113, 0.25) !important;
 }
 
-/* 后台表单 */
-html.dark input, html.dark textarea {
+html.dark .ios-btn,
+html.dark .ios-btn-secondary,
+html.dark .ios-btn-danger,
+html.dark .theme-btn,
+html.dark .tab,
+html.dark .date-btn,
+html.dark .user-login,
+html.dark .user-chip,
+html.dark .admin-link,
+html.dark .cal-nav,
+html.dark .like-btn,
+html.dark .react-btn,
+html.dark .comment-submit,
+html.dark .sort-btn,
+html.dark .back-btn,
+html.dark .gb-send {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 10px rgba(255, 255, 255, 0.04);
+}
+
+/* ========== 🌙 深色模式：表单 ========== */
+html.dark input,
+html.dark textarea {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e8e8f0 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 8px rgba(255, 255, 255, 0.04) !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 8px rgba(255, 255, 255, 0.04),
+    0 0 0 3px rgba(165, 166, 255, 0.2) !important;
+}
+
+html.dark .form-field label {
+  color: #b8b8cc !important;
+}
+
+html.dark .post-item-title {
+  color: #f2f2fa !important;
+}
+
+html.dark .post-item-date {
+  color: #8888a0 !important;
+}
+
+/* ========== 🌙 深色模式：页尾 ========== */
+html.dark .site-footer {
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+html.dark .site-footer p {
+  color: rgba(255, 255, 255, 0.25) !important;
+}
+
+html.dark .footer-hidden {
+  color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .footer-hidden:hover {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ========== 🌙 深色模式：后台表单补充 ========== */
+html.dark #post-form {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark #post-form h3 {
+  color: #f2f2fa !important;
+}
+
+html.dark #post-form input,
+html.dark #post-form textarea {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #e8e8f0 !important;
 }
-html.dark .form-field label { color: #b8b8cc !important; }
-html.dark .post-item {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
-}
-html.dark .post-item-title { color: #f2f2fa !important; }
-html.dark .post-item-date { color: #8888a0 !important; }
 
-/* 页尾 */
-html.dark .site-footer { border-top-color: rgba(255, 255, 255, 0.08); }
-html.dark .site-footer p { color: rgba(255, 255, 255, 0.25) !important; }
-html.dark .footer-hidden { color: rgba(255, 255, 255, 0.08) !important; }
-html.dark .footer-hidden:hover { color: rgba(255, 255, 255, 0.35) !important; }
-/* ========== 深色模式补丁：去反光 + 提升可读性 ========== */
-
-/* 所有段落文字提亮 */
-html.dark p {
-  color: #c2c2d4 !important;
+html.dark #post-form input::placeholder,
+html.dark #post-form textarea::placeholder {
+  color: #8888a0 !important;
 }
 
-/* 去掉卡片顶部的白色反光线 */
-html.dark .home-card,
-html.dark .about-card,
-html.dark .admin-container {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35) !important;
+html.dark .counter {
+  color: #8888a0 !important;
 }
 
-/* 导航栏也去掉反光 */
-html.dark .ios-header,
-html.dark .ios-header.scrolled {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+html.dark .date-btn {
+  background: rgba(165, 166, 255, 0.12) !important;
+  border-color: rgba(165, 166, 255, 0.25) !important;
 }
 
-/* 问候语文字提亮 */
-html.dark #greeting {
-  color: #d6d6e6 !important;
-}
-/* ========== 后台列表按钮修复：变回胶囊玻璃按钮 ========== */
+/* ========== 后台列表按钮：胶囊玻璃按钮 ========== */
 .post-item-actions button {
-  border-radius: 999px !important;
+  border-radius: var(--pill) !important;
   padding: 0.35rem 1rem !important;
   font-size: 0.8rem !important;
   font-weight: 500;
@@ -187,7 +425,20 @@ html.dark #greeting {
 .post-item-actions button:hover {
   transform: scale(1.05);
 }
-/* ========== 深色模式：登录/注册页 ========== */
+
+html.dark .post-item-actions .ios-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #c8c8d8;
+}
+
+html.dark .post-item-actions .ios-btn-danger {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+/* ========== 🌙 深色模式：登录/注册页 ========== */
 html.dark .user-card {
   background: rgba(255, 255, 255, 0.08) !important;
   border-color: rgba(255, 255, 255, 0.14) !important;
@@ -206,10 +457,6 @@ html.dark .tab.active {
   color: #a5a6ff;
 }
 
-html.dark .form-field label {
-  color: #b8b8cc;
-}
-
 html.dark .user-card input::placeholder {
   color: #8888a0;
 }
@@ -223,62 +470,7 @@ html.dark .user-card .ios-btn-secondary {
 html.dark #logged-text {
   color: #e8e8f0 !important;
 }
-/* ========== 修复滚动露白：背景铺满 + 兜底色 ========== */
-html {
-  background-color: #e0f0ff;
-  background-image: linear-gradient(135deg, #e0f0ff 0%, #f0e6ff 50%, #ffe6f0 100%);
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
 
-html.dark {
-  background-color: #0d1022;
-  background-image: linear-gradient(135deg, #0d1022 0%, #1a1035 50%, #200d2e 100%);
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-body {
-  min-height: 100vh;
-  background: transparent;
-}
-/* ========== iOS 26 液态玻璃：控件/文本框内边微发光 ========== */
-.ios-btn, .ios-btn-secondary, .ios-btn-danger, .theme-btn, .tab, .date-btn,
-.user-login, .user-chip, .admin-link, .cal-nav {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 10px rgba(255, 255, 255, 0.12);
-}
-
-input, textarea {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.1) !important;
-}
-
-input:focus, textarea:focus {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.1), 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-}
-
-.about-card, .home-card, .admin-container, .user-card, .calendar {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 16px rgba(255, 255, 255, 0.15);
-}
-
-/* 深色模式：发光减弱 */
-html.dark .ios-btn, html.dark .ios-btn-secondary, html.dark .theme-btn, html.dark .tab,
-html.dark .user-login, html.dark .user-chip, html.dark .admin-link, html.dark .cal-nav {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
-}
-
-html.dark input, html.dark textarea {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 8px rgba(255, 255, 255, 0.04) !important;
-}
-
-html.dark input:focus, html.dark textarea:focus {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 0 8px rgba(255, 255, 255, 0.04), 0 0 0 3px rgba(165, 166, 255, 0.2) !important;
-}
-
-html.dark .about-card, html.dark .home-card, html.dark .admin-container, html.dark .user-card, html.dark .calendar {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 16px rgba(255, 255, 255, 0.05) !important;
-}
 /* ========== 社交纯文本项 ========== */
 .socials .social-text {
   display: block;
@@ -296,16 +488,11 @@ html.dark .socials .social-text {
   border-color: rgba(255, 255, 255, 0.1);
   color: #b8b8cc;
 }
-/* ========== 桌面端导航 hover 高光交给小球，去掉链接自身高光 ========== */
-@media screen and (min-width: 637px) {
-  .desktop-nav a:hover {
-    background: transparent !important;
-  }
-}
-/* ========== 博客标签筛选胶囊（动态元素全局样式） ========== */
+
+/* ========== 博客标签筛选胶囊 ========== */
 .tag-chip {
   padding: 0.25rem 0.8rem;
-  border-radius: 999px;
+  border-radius: var(--pill) !important;
   background: rgba(255, 255, 255, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.45);
   color: #555;
@@ -314,94 +501,152 @@ html.dark .socials .social-text {
   transition: all 0.2s;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
-.tag-chip span { color: #999; font-size: 0.7rem; margin-left: 0.25rem; }
-.tag-chip:hover { transform: scale(1.05); }
+
+.tag-chip span {
+  color: #999;
+  font-size: 0.7rem;
+  margin-left: 0.25rem;
+}
+
+.tag-chip:hover {
+  transform: scale(1.05);
+}
+
 .tag-chip.active {
   background: rgba(99, 102, 241, 0.15);
   border-color: rgba(99, 102, 241, 0.35);
   color: #6366f1;
 }
-.tag-chip.active span { color: #6366f1; }
+
+.tag-chip.active span {
+  color: #6366f1;
+}
+
 html.dark .tag-chip {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.15);
   color: #b8b8cc;
 }
+
 html.dark .tag-chip.active {
   background: rgba(165, 166, 255, 0.15);
   border-color: rgba(165, 166, 255, 0.35);
   color: #a5a6ff;
 }
-/* ========== 后台深色模式统一 ========== */
-html.dark #post-form {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-html.dark #post-form h3 { color: #f2f2fa !important; }
-html.dark .form-field label { color: #b8b8cc !important; }
-html.dark #post-form input,
-html.dark #post-form textarea {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: #e8e8f0 !important;
-}
-html.dark #post-form input::placeholder,
-html.dark #post-form textarea::placeholder { color: #8888a0 !important; }
-html.dark .counter { color: #8888a0 !important; }
-html.dark .date-btn {
-  background: rgba(165, 166, 255, 0.12) !important;
-  border-color: rgba(165, 166, 255, 0.25) !important;
-}
-/* ========== 收敛入场动画：只轻轻浮起一点 ========== */
+
+/* ========== AOS 动画收敛 ========== */
 [data-aos] {
   transition-duration: 0.8s !important;
 }
+
 [data-aos="fade-up"] {
   transform: translate3d(0, 14px, 0) !important;
 }
+
 [data-aos="fade-up"].aos-animate {
   transform: translate3d(0, 0, 0) !important;
 }
-/* ========== 日历：半透磨砂 + 动态日期格全局样式 ========== */
+
+/* ========== 日历 ========== */
 .calendar {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: rgba(255, 255, 255, 0.86) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
 }
+
 html.dark .calendar {
-  background: rgba(25, 25, 45, 0.55) !important;
+  background: rgba(24, 24, 40, 0.88) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 14px rgba(255, 255, 255, 0.03) !important;
 }
 
-/* 日期格（JS 动态生成，必须全局） */
 .cal-day {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.35rem 0;
-  border-radius: 8px;
+  border-radius: 8px !important;
   font-size: 0.85rem;
   color: #333;
   transition: background 0.15s;
 }
-.cal-day:hover { background: rgba(99, 102, 241, 0.12); }
-.cal-day.today { border: 1px solid rgba(99, 102, 241, 0.4); }
-.cal-day.selected { background: #6366f1; color: #fff; }
-.cal-empty { visibility: hidden; }
 
-html.dark .cal-day { color: #d0d0e0; }
-html.dark .cal-day:hover { background: rgba(165, 166, 255, 0.15); }
-html.dark .cal-day.today { border-color: rgba(165, 166, 255, 0.5); }
-html.dark .cal-day.selected { background: #6366f1; color: #fff; }
-/* ========== 日历透明度回调（最终版） ========== */
-.calendar {
-  background: rgba(255, 255, 255, 0.86) !important;
+.cal-day:hover {
+  background: rgba(99, 102, 241, 0.12);
 }
-html.dark .calendar {
-  background: rgba(24, 24, 40, 0.88) !important;
+
+.cal-day.today {
+  border: 1px solid rgba(99, 102, 241, 0.4);
 }
-/* ========== 导航栏磨砂双保险 ========== */
-.ios-header {
-  backdrop-filter: blur(4px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(4px) saturate(180%) !important;
+
+.cal-day.selected {
+  background: #6366f1;
+  color: #fff;
+}
+
+.cal-empty {
+  visibility: hidden;
+}
+
+html.dark .cal-day {
+  color: #d0d0e0;
+}
+
+html.dark .cal-day:hover {
+  background: rgba(165, 166, 255, 0.15);
+}
+
+html.dark .cal-day.today {
+  border-color: rgba(165, 166, 255, 0.5);
+}
+
+html.dark .cal-day.selected {
+  background: #6366f1;
+  color: #fff;
+}
+
+/* ========== 归档：删框 + hover 提亮 ========== */
+.tl-item,
+html.dark .tl-item {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  clip-path: none !important;
+  opacity: 0.55;
+  transition: opacity 0.1s ease;
+}
+
+.tl-item:hover,
+html.dark .tl-item:hover {
+  opacity: 1 !important;
+}
+
+.tl-item::before,
+.tl-item::after,
+html.dark .tl-item::before,
+html.dark .tl-item::after {
+  display: none !important;
+  content: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  clip-path: none !important;
+}
+
+/* ========== 桌面端导航：去掉链接自身 hover 背景 ========== */
+@media screen and (min-width: 637px) {
+  .desktop-nav a:hover,
+  html.dark .desktop-nav a:hover {
+    background: transparent !important;
+  }
 }
