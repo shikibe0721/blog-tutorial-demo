@@ -1,0 +1,23 @@
+/* ========== fix.css：导航栏磨砂 + 小球高光 终极修复 ========== */
+
+/* 1. 导航栏磨砂（新文件，不会被旧语法错误吞掉） */
+.ios-header {
+  backdrop-filter: blur(4px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(4px) saturate(180%) !important;
+}
+
+/* 2. 桌面端导航链接：灭掉一切自带高光，只留小球 */
+@media screen and (min-width: 637px) {
+  .desktop-nav a,
+  .desktop-nav a:hover,
+  .desktop-nav a:active,
+  .desktop-nav a:focus {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* 3. 小球永远在最上层 */
+.nav-indicator { z-index: 2 !important; pointer-events: none; }
+.desktop-nav a { z-index: 1; }
