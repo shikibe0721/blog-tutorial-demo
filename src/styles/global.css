@@ -650,3 +650,13 @@ html.dark .tl-item::after {
     background: transparent !important;
   }
 }
+
+/* ========== 归档：hover 只加明度，不许挪窝 ========== */
+.tl-item,
+.tl-item:hover,
+html.dark .tl-item,
+html.dark .tl-item:hover {
+  transform: none !important;
+  translate: none !important;
+  transition: opacity 0.1s ease !important;
+}
