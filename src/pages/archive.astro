@@ -46,9 +46,9 @@ const pageTitle = "归档";
     cursor: pointer;
     color: #6366f1;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
   }
-  :global(.arch-tag:hover) { transform: scale(1.12); opacity: 0.8; }
+  :global(.arch-tag:hover) { transform: scale(1.12); }
   :global(.arch-tag.active) {
     text-decoration: underline;
     text-underline-offset: 5px;
@@ -63,9 +63,7 @@ const pageTitle = "归档";
     font-size: 0.75rem;
     color: #888;
     cursor: pointer;
-    transition: all 0.2s ease;
   }
-  :global(.arch-clear:hover) { background: rgba(128, 128, 128, 0.1); }
 
   /* === 巨大描边年份 === */
   :global(.tl-year) {
@@ -104,8 +102,7 @@ const pageTitle = "归档";
     gap: 1rem;
     padding: 1.2rem 0;
     text-decoration: none;
-    /* 丝滑的位移缓动曲线 */
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+    transition: transform 0.25s ease;
   }
   :global(.tl-item:hover) { transform: translateX(8px); }
 
@@ -113,8 +110,7 @@ const pageTitle = "归档";
     font-size: 1.35rem;
     font-weight: 600;
     color: #333;
-    /* 核心修复 1：标题颜色过渡 */
-    transition: color 0.3s ease; 
+    transition: color 0.3s ease;
   }
   :global(html.dark .tl-title) { color: #d8d8e4; }
   :global(.tl-item:hover .tl-title) { color: #6366f1; }
@@ -124,20 +120,15 @@ const pageTitle = "归档";
     font-size: 0.95rem;
     color: #999;
     white-space: nowrap;
-    /* 核心修复 2：小字加上颜色与透明度过渡！ */
-    transition: color 0.3s ease, opacity 0.3s ease; 
+    /* 核心：颜色过渡 0.3s，告别瞬间变脸 */
+    transition: color 0.3s ease;
   }
   :global(html.dark .tl-meta) { color: #77778c; }
-  
-  /* 核心修复 3：悬停时小字跟着一起优雅变蓝 */
-  :global(.tl-item:hover .tl-meta) { 
-    color: #818cf8; 
-    opacity: 0.9;
-  }
-  :global(html.dark .tl-item:hover .tl-meta) { 
-    color: #c4b5fd; 
-    opacity: 0.9;
-  }
+
+  /* 浅色模式悬停：明度变低（灰 → 深灰） */
+  :global(.tl-item:hover .tl-meta) { color: #555; }
+  /* 深色模式悬停：明度变高（暗灰 → 亮灰） */
+  :global(html.dark .tl-item:hover .tl-meta) { color: #b9b9d0; }
 
   :global(.tl-empty) { color: #888; }
 </style>
