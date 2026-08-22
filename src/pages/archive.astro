@@ -116,19 +116,38 @@ const pageTitle = "归档";
   :global(.tl-item:hover .tl-title) { color: #6366f1; }
   :global(html.dark .tl-item:hover .tl-title) { color: #a5a6ff; }
 
-  :global(.tl-meta) {
+  /*
+    修复点：
+    1. 你原来的写法本身没错：transition 放在 .tl-meta，hover 改变 color。
+    2. 但如果页面里有全局样式、BaseLayout 样式、重置样式也用了 .tl-meta，
+       就可能把 transition / color 覆盖掉，导致看起来“没有过渡”。
+    3. 这里用 #timeline-wrap 提升选择器优先级，避免被外部全局样式轻易覆盖。
+    4. 同时补充 .tl-meta:hover，保证鼠标精确悬停小字时也能触发。
+  */
+  :global(#timeline-wrap .tl-meta) {
     font-size: 0.95rem;
     color: #999;
     white-space: nowrap;
-    /* 核心：颜色过渡 0.3s，告别瞬间变脸 */
     transition: color 0.3s ease;
   }
-  :global(html.dark .tl-meta) { color: #77778c; }
 
-  /* 浅色模式悬停：明度变低（灰 → 深灰） */
-  :global(.tl-item:hover .tl-meta) { color: #555; }
-  /* 深色模式悬停：明度变高（暗灰 → 亮灰） */
-  :global(html.dark .tl-item:hover .tl-meta) { color: #b9b9d0; }
+  :global(html.dark #timeline-wrap .tl-meta) {
+    color: #77778c;
+  }
+
+  :global(#timeline-wrap .tl-item:hover .tl-meta),
+  :global(#timeline-wrap .tl-item:focus-visible .tl-meta),
+  :global(#timeline-wrap .tl-meta:hover) {
+    color: #555;
+    transition: color 0.3s ease;
+  }
+
+  :global(html.dark #timeline-wrap .tl-item:hover .tl-meta),
+  :global(html.dark #timeline-wrap .tl-item:focus-visible .tl-meta),
+  :global(html.dark #timeline-wrap .tl-meta:hover) {
+    color: #b9b9d0;
+    transition: color 0.3s ease;
+  }
 
   :global(.tl-empty) { color: #888; }
 </style>
