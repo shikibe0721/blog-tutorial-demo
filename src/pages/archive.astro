@@ -7,6 +7,7 @@ const pageTitle = "归档";
 <BaseLayout pageTitle={pageTitle}>
   <section id="archive-page" class="archive-page">
     <div class="arch-stats" id="arch-stats" data-aos="fade-up" aria-live="polite"></div>
+    
     <div
       class="arch-tags"
       id="arch-tags"
@@ -44,10 +45,14 @@ const pageTitle = "归档";
   :global(.arch-empty),
   :global(.tl-empty) {
     color: var(--arch-muted);
+    text-align: center;
+    padding: 2rem 0;
   }
 
   :global(.arch-error) {
     color: #dc2626;
+    text-align: center;
+    padding: 2rem 0;
   }
 
   :global(html.dark .arch-error) {
@@ -91,7 +96,7 @@ const pageTitle = "归档";
     cursor: pointer;
     color: var(--arch-accent);
     font-weight: 500;
-    transition: transform 0.18s ease, color 0.18s ease;
+    transition: transform 0.18s ease, color 0.18s ease, opacity 0.18s ease;
   }
 
   :global(.arch-tag:hover) {
@@ -131,13 +136,7 @@ const pageTitle = "归档";
     outline-offset: 2px;
   }
 
-  /*
-    === 巨大描边年份 ===
-    注意：这里必须用 div 渲染（JS 里也是 div），
-    并且选择器带上 #timeline-wrap 提高优先级，
-    防止 BaseLayout 的全局标题样式把 color 覆盖掉，
-    否则空心字会被"填色"变成实心字！
-  */
+  /* === 巨大描边年份 === */
   :global(#timeline-wrap .tl-year) {
     font-size: clamp(6rem, 18vw, 11rem);
     font-weight: 800;
@@ -147,6 +146,7 @@ const pageTitle = "归档";
     margin: 3.5rem 0 -1.5rem;
     user-select: none;
     pointer-events: none;
+    transition: color 0.3s ease;
   }
 
   :global(#timeline-wrap .tl-year:first-child) {
@@ -182,7 +182,8 @@ const pageTitle = "归档";
     gap: 1rem;
     padding: 1.2rem 0;
     text-decoration: none;
-    transition: transform 0.25s ease;
+    color: inherit;
+    transition: transform 0.25s ease, color 0.3s ease;
   }
 
   :global(.tl-item:hover) {
@@ -236,7 +237,8 @@ const pageTitle = "归档";
     :global(.arch-tag),
     :global(.arch-clear),
     :global(.tl-title),
-    :global(#timeline-wrap .tl-meta) {
+    :global(#timeline-wrap .tl-meta),
+    :global(#timeline-wrap .tl-year) {
       transition: none;
     }
 
@@ -253,11 +255,6 @@ const pageTitle = "归档";
 <script is:inline>
 (() => {
   'use strict';
-
-  const MONTHS = Object.freeze([
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-  ]);
 
   const DAY_MS = 86400000;
 
@@ -295,88 +292,47 @@ const pageTitle = "归档";
   };
 
   const parseTags = (raw) => {
-    let tags = [];
-
-    if (Array.isArray(raw)) {
-      tags = raw;
-    } else if (typeof raw === 'string') {
+    if (Array.isArray(raw)) return raw.map(t => String(t).trim()).filter(Boolean);
+    
+    if (typeof raw === 'string') {
       const value = raw.trim();
-
-      if (value) {
-        try {
-          const parsed = JSON.parse(value);
-
-          if (Array.isArray(parsed)) {
-            tags = parsed;
-          } else if (parsed != null) {
-            tags = [parsed];
-          }
-        } catch {
-          tags = value.split(',');
-        }
+      if (!value) return [];
+      
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed)) return parsed.map(t => String(t).trim()).filter(Boolean);
+        if (parsed != null) return [String(parsed).trim()];
+      } catch {
+        return value.split(',').map(t => t.trim()).filter(Boolean);
       }
     }
-
-    if (!Array.isArray(tags)) {
-      tags = [];
-    }
-
-    return tags
-      .map((tag) => {
-        if (tag && typeof tag === 'object') {
-          return String(tag.name ?? tag.label ?? tag.title ?? '').trim();
-        }
-
-        return String(tag ?? '').trim();
-      })
-      .filter(Boolean);
+    return [];
   };
 
   const calcReadMin = (text) => {
     if (!text) return 1;
-
-    const cjk = (
-      text.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []
-    ).length;
-
-    const words = text
-      .replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g, ' ')
-      .match(/[-A-Za-z0-9_\u00C0-\u024F]+/g) || [];
-
+    const cjk = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []).length;
+    const words = text.replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g, ' ').match(/[-A-Za-z0-9_\u00C0-\u024F]+/g) || [];
     return Math.max(1, Math.round(cjk / 400 + words.length / 200));
   };
 
   const formatK = (value) => {
     const num = Number(value) || 0;
-
-    if (num < 1000) return String(num);
-
-    return `${(num / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    return num < 1000 ? String(num) : `${(num / 1000).toFixed(1).replace(/\.0$/, '')}k`;
   };
 
+  // ✨ 优化：使用原生 Intl 格式化日期，替代手动查表，更优雅且支持本地化
   const fmtDate = (dateKey) => {
-    const parts = String(dateKey || '').slice(0, 10).split('-');
-
-    if (parts.length < 3) return '';
-
-    const month = Number(parts[1]);
-    const day = Number(parts[2]);
-
-    if (!month || month < 1 || month > 12 || !day) return '';
-
-    return `${MONTHS[month - 1]} ${day}`;
+    if (!dateKey) return '';
+    const date = new Date(dateKey);
+    if (isNaN(date.getTime())) return '';
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
   };
 
   const postHref = (post) => {
     const slug = String(post.slug ?? '').trim();
-
     if (!slug) return '#';
-
-    return `/posts/${slug
-      .split('/')
-      .filter(Boolean)
-      .map(encodeURIComponent)
-      .join('/')}`;
+    return `/posts/${slug.split('/').filter(Boolean).map(encodeURIComponent).join('/')}`;
   };
 
   const getTagFromURL = () => {
@@ -390,13 +346,11 @@ const pageTitle = "归档";
   const syncTagToURL = () => {
     try {
       const url = new URL(window.location.href);
-
       if (state.activeTag) {
         url.searchParams.set('tag', state.activeTag);
       } else {
         url.searchParams.delete('tag');
       }
-
       window.history.replaceState(null, '', url);
     } catch {
       // ignore URL sync errors
@@ -405,66 +359,48 @@ const pageTitle = "归档";
 
   const calcDays = (oldestDate) => {
     if (!oldestDate) return 1;
-
     const time = Date.parse(`${oldestDate}T00:00:00`);
-
-    if (Number.isNaN(time)) return 1;
-
-    return Math.max(1, Math.floor((Date.now() - time) / DAY_MS));
+    return Number.isNaN(time) ? 1 : Math.max(1, Math.floor((Date.now() - time) / DAY_MS));
   };
 
   function preparePosts(rawPosts) {
     const list = Array.isArray(rawPosts)
       ? rawPosts
-      : rawPosts && Array.isArray(rawPosts.posts)
-        ? rawPosts.posts
-        : [];
+      : (rawPosts && Array.isArray(rawPosts.posts) ? rawPosts.posts : []);
 
     const counts = new Map();
     let totalChars = 0;
     let oldestDate = null;
 
-    const posts = list
-      .filter(Boolean)
-      .map((item) => {
-        const post =
-          item && typeof item === 'object'
-            ? item
-            : { title: String(item ?? '') };
+    const posts = list.filter(Boolean).map((item) => {
+      const post = (item && typeof item === 'object') ? item : { title: String(item ?? '') };
+      const text = normalizeContent(post.content);
+      const tags = parseTags(post.tags);
+      const dateKey = String(post.pub_date || '').slice(0, 10);
+      const year = dateKey.slice(0, 4) || '未知年份';
 
-        const text = normalizeContent(post.content);
-        const tags = parseTags(post.tags);
-        const dateKey = String(post.pub_date || '').slice(0, 10);
-        const year = dateKey.slice(0, 4) || '未知年份';
+      totalChars += text.length;
+      tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1));
 
-        totalChars += text.length;
+      if (dateKey && (!oldestDate || dateKey < oldestDate)) {
+        oldestDate = dateKey;
+      }
 
-        tags.forEach((tag) => {
-          counts.set(tag, (counts.get(tag) || 0) + 1);
-        });
+      return {
+        ...post,
+        _text: text,
+        _tags: tags,
+        _dateKey: dateKey,
+        _year: year,
+        _readMin: calcReadMin(text)
+      };
+    });
 
-        if (dateKey && (!oldestDate || dateKey < oldestDate)) {
-          oldestDate = dateKey;
-        }
-
-        return {
-          ...post,
-          _text: text,
-          _tags: tags,
-          _dateKey: dateKey,
-          _year: year,
-          _readMin: calcReadMin(text)
-        };
-      });
-
+    // ✨ 优化：使用 localeCompare 简化字符串日期降序排序逻辑
     posts.sort((a, b) => {
-      if (!a._dateKey && !b._dateKey) return 0;
       if (!a._dateKey) return 1;
       if (!b._dateKey) return -1;
-
-      if (a._dateKey === b._dateKey) return 0;
-
-      return a._dateKey < b._dateKey ? 1 : -1;
+      return b._dateKey.localeCompare(a._dateKey);
     });
 
     state.posts = posts;
@@ -479,7 +415,6 @@ const pageTitle = "归档";
 
   function renderStats() {
     if (!els.stats) return;
-
     const items = [
       { value: state.posts.length, label: '篇文章' },
       { value: formatK(state.totalChars), label: '总字数' },
@@ -487,26 +422,19 @@ const pageTitle = "归档";
       { value: state.tagCounts.size, label: '个标签' }
     ];
 
-    els.stats.innerHTML = items
-      .map((item) => {
-        return `
-          <div class="arch-stat">
-            <b>${esc(item.value)}</b>
-            <span>${esc(item.label)}</span>
-          </div>
-        `;
-      })
-      .join('');
+    els.stats.innerHTML = items.map((item) => `
+      <div class="arch-stat">
+        <b>${esc(item.value)}</b>
+        <span>${esc(item.label)}</span>
+      </div>
+    `).join('');
   }
 
   function renderTagCloud() {
     if (!els.tags) return;
 
     const entries = [...state.tagCounts.entries()].sort((a, b) => {
-      return (
-        b[1] - a[1] ||
-        a[0].localeCompare(b[0], undefined, { sensitivity: 'base' })
-      );
+      return b[1] - a[1] || a[0].localeCompare(b[0], undefined, { sensitivity: 'base' });
     });
 
     if (!entries.length) {
@@ -517,7 +445,6 @@ const pageTitle = "归档";
     const html = entries.map(([tag, count]) => {
       const isActive = state.activeTag === tag;
       const size = (0.85 + Math.min(count, 6) * 0.09).toFixed(2);
-
       return `
         <button
           type="button"
@@ -534,7 +461,7 @@ const pageTitle = "归档";
 
     if (state.activeTag) {
       html.push(`
-        <button type="button" class="arch-clear" id="arch-clear">
+        <button type="button" class="arch-clear" id="arch-clear" aria-label="清除标签筛选">
           ✕ 清除筛选
         </button>
       `);
@@ -553,36 +480,28 @@ const pageTitle = "归档";
     if (!posts.length) {
       els.timeline.innerHTML = `
         <p class="tl-empty">
-          ${state.activeTag ? '这个标签下还没有文章~' : '还没有文章~'}
+          ${state.activeTag ? '这个标签下还没有文章哦～' : '还没有文章哦～'}
         </p>
       `;
       return;
     }
 
     const groups = new Map();
-
     posts.forEach((post) => {
-      if (!groups.has(post._year)) {
-        groups.set(post._year, []);
-      }
-
+      if (!groups.has(post._year)) groups.set(post._year, []);
       groups.get(post._year).push(post);
     });
 
     const html = [];
-
     groups.forEach((yearPosts, year) => {
-      // 注意：年份必须用 div，不能用 h1~h6，
-      // 否则会被 BaseLayout 的全局标题样式覆盖颜色，空心字变实心字！
       html.push(`
         <div class="tl-year">${esc(year)}</div>
-        <ul class="tl-list" aria-label="${esc(year)} 的文章">
+        <ul class="tl-list" aria-label="${esc(year)} 年的文章">
       `);
 
       yearPosts.forEach((post) => {
         const date = fmtDate(post._dateKey);
         const meta = [date, `${post._readMin} min`].filter(Boolean).join(' · ');
-
         html.push(`
           <li>
             <a class="tl-item" href="${postHref(post)}">
@@ -592,7 +511,6 @@ const pageTitle = "归档";
           </li>
         `);
       });
-
       html.push('</ul>');
     });
 
@@ -602,25 +520,18 @@ const pageTitle = "归档";
   function setLoading() {
     if (els.stats) els.stats.innerHTML = '';
     if (els.tags) els.tags.innerHTML = '';
-
-    if (els.timeline) {
-      els.timeline.innerHTML = '<p class="arch-loading">加载中...</p>';
-    }
+    if (els.timeline) els.timeline.innerHTML = '<p class="arch-loading">加载中...</p>';
   }
 
   function renderError(error) {
     console.error('[archive] load failed:', error);
-
     if (els.timeline) {
-      els.timeline.innerHTML = `
-        <p class="arch-error">加载失败，请刷新重试。</p>
-      `;
+      els.timeline.innerHTML = '<p class="arch-error">加载失败，请刷新重试。</p>';
     }
   }
 
   function setActiveTag(tag) {
     state.activeTag = tag;
-
     syncTagToURL();
     renderTagCloud();
     renderTimeline();
@@ -628,26 +539,17 @@ const pageTitle = "归档";
 
   function focusTagButton(tag) {
     if (!els.tags || !tag) return;
-
-    const buttons = els.tags.querySelectorAll('.arch-tag');
-
-    for (const button of buttons) {
-      if (button.dataset.tag === tag) {
-        button.focus();
-        break;
-      }
-    }
+    const button = els.tags.querySelector(`.arch-tag[data-tag="${CSS.escape(tag)}"]`);
+    if (button) button.focus();
   }
 
   function focusFirstTag() {
-    const first = els.tags && els.tags.querySelector('.arch-tag');
-
+    const first = els.tags?.querySelector('.arch-tag');
     if (first) first.focus();
   }
 
   function handleTagClick(event) {
     const button = event.target.closest('button');
-
     if (!button || !els.tags.contains(button)) return;
 
     if (button.id === 'arch-clear') {
@@ -659,7 +561,6 @@ const pageTitle = "归档";
     if (button.classList.contains('arch-tag')) {
       const tag = button.dataset.tag || '';
       const nextTag = state.activeTag === tag ? null : tag;
-
       setActiveTag(nextTag);
       focusTagButton(tag);
     }
@@ -667,27 +568,19 @@ const pageTitle = "归档";
 
   async function loadPosts() {
     setLoading();
-
     try {
-      const res = await fetch('/api/posts', {
-        headers: {
-          Accept: 'application/json'
-        }
-      });
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-
+      const res = await fetch('/api/posts', { headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      
       const data = await res.json();
       const requestedTag = state.activeTag;
-
+      
       preparePosts(data);
-
+      
       if (requestedTag && state.activeTag !== requestedTag) {
         syncTagToURL();
       }
-
+      
       renderStats();
       renderTagCloud();
       renderTimeline();
@@ -696,26 +589,16 @@ const pageTitle = "归档";
     }
   }
 
-  function cacheElements() {
+  function init() {
     els.stats = document.getElementById('arch-stats');
     els.tags = document.getElementById('arch-tags');
     els.timeline = document.getElementById('timeline-wrap');
-  }
-
-  function bindEvents() {
-    if (els.tags) {
-      els.tags.addEventListener('click', handleTagClick);
-    }
-  }
-
-  function init() {
-    cacheElements();
 
     if (!els.timeline) return;
 
     state.activeTag = getTagFromURL();
-
-    bindEvents();
+    els.tags?.addEventListener('click', handleTagClick);
+    
     void loadPosts();
   }
 
