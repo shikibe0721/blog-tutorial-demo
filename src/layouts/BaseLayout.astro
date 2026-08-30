@@ -1,10 +1,12 @@
 ---
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import SEO from "../components/SEO.astro";
 import "../styles/global.css";
 import "../styles/g3.css";
 import "../styles/fix.css";
-const { pageTitle } = Astro.props;
+
+const { pageTitle, description } = Astro.props;
 ---
 
 <html lang="en">
@@ -13,16 +15,8 @@ const { pageTitle } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>{pageTitle}</title>
-    <script is:inline>
-      (function () {
-        var saved = localStorage.getItem('theme');
-        var dark;
-        if (saved) { dark = saved === 'dark'; }
-        else { var h = new Date().getHours(); dark = (h >= 19 || h < 7); }
-        if (dark) document.documentElement.classList.add('dark');
-      })();
-    </script>
+    <SEO title={pageTitle} description={description} />
+    <script type="module" src="../scripts/theme.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" media="print" onload="this.media='all'" />
     <script is:inline defer src="https://cdn.jsdelivr.net/npm/liquid-gl@latest/dist/liquidGL.min.js"></script>
   </head>
@@ -31,52 +25,26 @@ const { pageTitle } = Astro.props;
     <h1>{pageTitle}</h1>
     <slot />
     <Footer />
+
     <script>
       import "../scripts/menu.js";
+      import "../scripts/scroll.js";
+      import "../scripts/effects.js";
     </script>
+
     <script src="../scripts/g3.js"></script>
-    
-    <!-- 关键：加上 defer，脚本在后台下载，绝不卡页面渲染 -->
     <script is:inline defer src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script is:inline defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
-    
     <script is:inline>
-      // 脚本加了 defer，所以要用 DOMContentLoaded 等 DOM 解析完再初始化
-      document.addEventListener('DOMContentLoaded', () => {
-        if (window.Lenis) {
-          const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-          function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-          requestAnimationFrame(raf);
+      (() => {
+        function fixHeader() {
+          const el = document.getElementById('nav-bar');
+          if (!el) return;
+          el.style.setProperty('backdrop-filter', 'blur(4px) saturate(180%)', 'important');
+          el.style.setProperty('-webkit-backdrop-filter', 'blur(4px) saturate(180%)', 'important');
         }
-        document.querySelectorAll('[data-aos]').forEach(el => el.removeAttribute('data-aos'));
-        if (typeof liquidGL !== 'undefined') {
-          liquidGL({
-            target: '[data-liquid-glass]', snapshot: 'body', resolution: 0.5, frost: 0.1, aberration: 0.02,
-          });
-        }
-      });
+        fixHeader();
+        window.addEventListener('load', fixHeader);
+      })();
     </script>
-  <script is:inline>
-    (function () {
-      function fixHeader() {
-        var el = document.getElementById('nav-bar');
-        if (!el) return;
-        el.style.setProperty('backdrop-filter', 'blur(4px) saturate(180%)', 'important');
-        el.style.setProperty('-webkit-backdrop-filter', 'blur(4px) saturate(180%)', 'important');
-        setTimeout(function () {
-          var cs = getComputedStyle(el);
-          var v = cs.backdropFilter || cs.webkitBackdropFilter;
-          if (!v || v === 'none') {
-            el.style.setProperty('background',
-              document.documentElement.classList.contains('dark') ? 'rgba(18,18,32,0.92)' : 'rgba(255,255,255,0.92)',
-              'important');
-          }
-        }, 600);
-      }
-      fixHeader();
-      document.addEventListener('DOMContentLoaded', fixHeader);
-      window.addEventListener('load', fixHeader);
-    })();
-  </script>
   </body>
 </html>
