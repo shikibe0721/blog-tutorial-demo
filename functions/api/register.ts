@@ -13,9 +13,9 @@ export async function onRequestPost(context: any) {
     const existing = await env.DB.prepare('SELECT id FROM users WHERE username = ?').bind(name).first();
     if (existing) return json({ error: '这个用户名已经被注册了的说!' }, 409);
 
-    const salt = crypto.randomUUID();
-    const hash = await hashPassword(String(password), salt);
-    await env.DB.prepare('INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?)').bind(name, hash, salt).run();
+    // PBKDF2 新格式：pbkdf2$迭代次数$salt$hash（不再写入独立 salt 列）
+    const hash = await hashPassword(String(password));
+    await env.DB.prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)').bind(name, hash).run();
 
     const user = await env.DB.prepare('SELECT id FROM users WHERE username = ?').bind(name).first();
     const token = crypto.randomUUID();

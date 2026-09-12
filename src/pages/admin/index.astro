@@ -310,6 +310,24 @@ const pageTitle = "博客管理后台";
 </style>
 
 <script is:inline>
+  // === 管理员会话 token 管理 ===
+  function adminToken() { return localStorage.getItem('mayu_admin_token'); }
+  async function adminFetch(url, options = {}) {
+    const opts = Object.assign({}, options);
+    opts.headers = Object.assign({}, options.headers || {});
+    const t = adminToken();
+    if (t) opts.headers['Authorization'] = 'Bearer ' + t;
+    const res = await fetch(url, opts);
+    if (res.status === 401) { forceRelogin(); throw new Error('会话已过期'); }
+    return res;
+  }
+  function forceRelogin() {
+    localStorage.removeItem('mayu_admin_token');
+    document.getElementById('editor-panel').style.display = 'none';
+    document.getElementById('login-panel').style.display = 'block';
+    showError('登录已过期，请重新登录');
+  }
+
   // === 登录 ===
   function login() {
     const pw = document.getElementById('password').value;
@@ -320,7 +338,8 @@ const pageTitle = "博客管理后台";
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password: pw })
     }).then(res => res.json().then(data => ({ ok: res.ok, data }))).then(({ ok, data }) => {
-      if (ok) {
+      if (ok && data.token) {
+        localStorage.setItem('mayu_admin_token', data.token);
         document.getElementById('login-panel').style.display = 'none';
         document.getElementById('editor-panel').style.display = 'block';
         loadPosts();
@@ -338,6 +357,9 @@ const pageTitle = "博客管理后台";
   }
 
   function logout() {
+    const t = adminToken();
+    if (t) fetch('/api/auth', { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + t } }).catch(() => {});
+    localStorage.removeItem('mayu_admin_token');
     document.getElementById('editor-panel').style.display = 'none';
     document.getElementById('login-panel').style.display = 'block';
     document.getElementById('password').value = '';
@@ -346,6 +368,21 @@ const pageTitle = "博客管理后台";
   document.getElementById('password').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') login();
   });
+
+  // 刷新页面时校验已有会话
+  (async () => {
+    if (!adminToken()) return;
+    try {
+      const res = await fetch('/api/auth', { headers: { 'Authorization': 'Bearer ' + adminToken() } });
+      if (res.ok) {
+        document.getElementById('login-panel').style.display = 'none';
+        document.getElementById('editor-panel').style.display = 'block';
+        loadPosts();
+      } else {
+        forceRelogin();
+      }
+    } catch { /* 网络异常保持登录页 */ }
+  })();
 
   // === 文本框自动长高 + 字数统计 ===
   const descEl = document.getElementById('f-desc');
@@ -482,24 +519,26 @@ const pageTitle = "博客管理后台";
     const url = id ? '/api/posts/' + id : '/api/posts';
     const method = id ? 'PUT' : 'POST';
 
-    const res = await fetch(url, {
+    const res = await adminFetch(url, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
-    });
+    }).catch(() => null);
 
+    if (!res) return;
     if (res.ok) {
       alert('保存成功！');
       hideForm();
       loadPosts();
     } else {
-      alert('保存失败，请检查控制台');
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || '保存失败，请检查控制台');
     }
   }
 
   async function deletePost(id) {
     if (!confirm('确定要删除这篇文章吗？此操作不可撤销。')) return;
-    await fetch('/api/posts/' + id, { method: 'DELETE' });
+    await adminFetch('/api/posts/' + id, { method: 'DELETE' }).catch(() => null);
     loadPosts();
   }
 </script>

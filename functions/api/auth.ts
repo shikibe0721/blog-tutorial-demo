@@ -1,5 +1,14 @@
-// 服务端记录失败次数和时间
+import { json, timingSafeEqual, createAdminSession, getBearerToken, requireAdmin } from './_utils';
+
+// 服务端记录失败次数和时间（进程内，实例隔离但足以抬高爆破成本）
 const failRecord: Record<string, { count: number; lockUntil: number }> = {};
+
+// 校验当前管理员会话是否有效（前端刷新页面时调用）
+export async function onRequestGet(context: any) {
+  const session = await requireAdmin(context);
+  if (!session) return json({ error: '未登录' }, 401);
+  return json({ ok: true });
+}
 
 export async function onRequestPost(context: any) {
   const { request, env } = context;
@@ -13,20 +22,23 @@ export async function onRequestPost(context: any) {
   // 检查是否被锁定
   if (now < record.lockUntil) {
     const remain = Math.ceil((record.lockUntil - now) / 1000);
-    return new Response(
-      JSON.stringify({ error: '操作太频繁，请 ' + remain + ' 秒后再试', locked: true }),
-      { status: 429, headers: { 'Content-Type': 'application/json' } }
-    );
+    return json({ error: '操作太频繁，请 ' + remain + ' 秒后再试', locked: true }, 429);
   }
 
   const { password } = await request.json();
 
-  if (password === env.ADMIN_PASSWORD) {
-    // 登录成功，清除失败记录
+  if (!env.ADMIN_PASSWORD) {
+    return json({ error: '服务端未配置 ADMIN_PASSWORD' }, 500);
+  }
+
+  // 恒定时间比较，防时序侧信道
+  if (timingSafeEqual(String(password || ''), String(env.ADMIN_PASSWORD))) {
     delete failRecord[ip];
-    return new Response(JSON.stringify({ token: 'authenticated' }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const session = await createAdminSession(env);
+    if (!session) {
+      return json({ error: '会话创建失败，请先执行后台会话表迁移（见 SECURITY-UPGRADE.md）' }, 500);
+    }
+    return json({ token: session.token, expiresAt: session.expiresAt });
   }
 
   // 密码错误，累加计数
@@ -38,13 +50,22 @@ export async function onRequestPost(context: any) {
   failRecord[ip] = record;
 
   const remaining = 5 - record.count;
-  return new Response(
-    JSON.stringify({
-      error: remaining > 0
-        ? '密码错误（还剩 ' + remaining + ' 次机会）'
-        : '错误次数过多，已锁定 60 秒',
-      locked: remaining <= 0,
-    }),
-    { status: 401, headers: { 'Content-Type': 'application/json' } }
-  );
+  return json({
+    error: remaining > 0
+      ? '密码错误（还剩 ' + remaining + ' 次机会）'
+      : '错误次数过多，已锁定 60 秒',
+    locked: remaining <= 0,
+  }, 401);
+}
+
+// 退出：销毁当前管理员会话
+export async function onRequestDelete(context: any) {
+  const { request, env } = context;
+  const token = getBearerToken(request);
+  if (token) {
+    try {
+      await env.DB.prepare('DELETE FROM admin_sessions WHERE token = ?').bind(token).run();
+    } catch {}
+  }
+  return json({ ok: true });
 }
